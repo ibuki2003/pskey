@@ -9,6 +9,7 @@
     "web": "expo start --web"
   },
   "dependencies": {
+    "@check-light-or-dark/color": "^1.0.3",
     "@expo/webpack-config": "^18.0.1",
     "expo": "~49.0.4",
     "expo-navigation-bar": "~2.3.0",
