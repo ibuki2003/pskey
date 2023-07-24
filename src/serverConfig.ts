@@ -111,6 +111,17 @@ export function useServers() {
     [setSelectedServer, update]
   );
 
+  React.useEffect(() => {
+    // refetch server info
+    if (selected === null || !servers.has(selected)) return;
+    fetchServerInfo(selected).then((info) => {
+      update(selected, {
+        ...servers.get(selected)!,
+        ...info,
+      });
+    });
+  }, [selected]);
+
   return {
     servers,
     loading,
