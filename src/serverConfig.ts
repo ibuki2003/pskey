@@ -7,6 +7,8 @@ export interface ServerConfig {
   name: string;
   iconUrl: string;
   lastUsedAt: number; // timestamp
+
+  userScripts: string[];
 }
 
 type MisskeyMeta = {
@@ -17,7 +19,15 @@ type MisskeyMeta = {
 const SERVERS_KEY = "servers";
 
 async function loadServers(): Promise<ServerConfig[]> {
-  return await storage.getAllDataForKey(SERVERS_KEY);
+  return (await storage.getAllDataForKey(SERVERS_KEY)).map((server) => {
+    // migration
+
+    if (!("userScripts" in server)) {
+      server.userScripts = [];
+    }
+
+    return server;
+  });
 }
 
 async function fetchServerInfo(domain: string) {

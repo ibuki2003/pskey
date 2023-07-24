@@ -10,6 +10,7 @@ import {
 } from "react-native";
 import { Pressable } from "react-native";
 import DialogInput from "react-native-dialog-input";
+import ConfigModal from "./components/configModal";
 import Web from "@/components/web";
 import * as ServerConfig from "@/serverConfig";
 import lightOrDarkColor from "@check-light-or-dark/color";
@@ -20,6 +21,8 @@ import { StatusBar as ExpoStatusBar } from "expo-status-bar";
 
 export default function App() {
   const [addServerModalVisible, setModalVisible] = React.useState(false);
+
+  const [configModal, setConfigModal] = React.useState<string | null>(null);
 
   const [backgroundColor, setBackgroundColor] = React.useState("#000");
   React.useEffect(() => {
@@ -89,27 +92,44 @@ export default function App() {
         <Pressable
           style={[styles.menuButton]}
           onPress={() => {
-            const s = servers.selected;
-            if (s === null) return;
-            Alert.alert(
-              "Are you sure?",
-              'Delete "' + servers.servers.get(s)!.name + '"',
-              [
-                { text: "Cancel", onPress: () => {}, style: "cancel" },
-                {
-                  text: "OK",
-                  onPress: () => {
-                    servers.remove(s);
-                  },
-                  style: "destructive",
-                },
-              ]
-            );
+            setConfigModal(servers.selected);
           }}
         >
-          <Text style={styles.menuButtonText}>x</Text>
+          <Text style={styles.menuButtonText}>...</Text>
         </Pressable>
       </View>
+      {configModal && (
+        <ConfigModal
+          open={configModal !== null}
+          oldConfig={servers.servers.get(configModal)!}
+          onClose={(v) => {
+            if (v === false) {
+              setConfigModal(null);
+              return;
+            }
+            if (v === null) {
+              Alert.alert(
+                "Are you sure?",
+                'Delete "' + servers.servers.get(configModal)!.name + '"',
+                [
+                  { text: "Cancel", onPress: () => {}, style: "cancel" },
+                  {
+                    text: "OK",
+                    onPress: () => {
+                      setConfigModal(null);
+                      servers.remove(configModal);
+                    },
+                    style: "destructive",
+                  },
+                ]
+              );
+            } else {
+              servers.update(configModal, v);
+              setConfigModal(null);
+            }
+          }}
+        />
+      )}
       {servers.selected === null ? (
         <Text>No servers</Text>
       ) : (
@@ -117,6 +137,7 @@ export default function App() {
           uri={`https://${servers.selected}`}
           style={styles.webview}
           onBGColorChange={(color) => setBackgroundColor(color)}
+          userScripts={servers.servers.get(servers.selected)!.userScripts}
         />
       )}
     </View>
