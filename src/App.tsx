@@ -8,6 +8,7 @@ import {
 } from "react-native";
 import Web from "@/components/web";
 import lightOrDarkColor from "@check-light-or-dark/color";
+import { Picker } from "@react-native-picker/picker";
 import { registerRootComponent } from "expo";
 import { setBackgroundColorAsync } from "expo-navigation-bar";
 import { StatusBar as ExpoStatusBar } from "expo-status-bar";
@@ -25,12 +26,32 @@ export default function App() {
     [backgroundColor]
   );
 
+  const [selectedServer, setSelectedServer] = React.useState("bskey.social");
+
   return (
     <View style={[styles.container, { backgroundColor }]}>
       <SafeAreaView />
       <ExpoStatusBar style={isDark ? "light" : "dark"} />
+      <View
+        style={{
+          flexDirection: "row",
+          alignItems: "center",
+          paddingHorizontal: 10,
+        }}
+      >
+        <Picker
+          selectedValue={selectedServer}
+          onValueChange={(itemValue) => setSelectedServer(itemValue)}
+          mode="dropdown"
+          style={{ flex: 1 }}
+        >
+          {/* TODO: contentDescription; not released yet */}
+          <Picker.Item label="ぶるーすきー!" value="bskey.social" />
+          <Picker.Item label="misskey.io" value="misskey.io" />
+        </Picker>
+      </View>
       <Web
-        uri="https://bskey.social/"
+        uri={`https://${selectedServer}`}
         style={styles.webview}
         onBGColorChange={(color) => setBackgroundColor(color)}
       />
