@@ -36,7 +36,7 @@ const ConfigModal: React.FC<Props> = (props) => {
     <Modal animationType="none" transparent={true} visible={props.open}>
       <View style={styles.centeredView}>
         <View style={styles.modalView}>
-          <Text style={styles.modalTitle}>{props.oldConfig.name} settings</Text>
+          <Text style={styles.modalTitle}>{props.oldConfig.name} の設定</Text>
           <Pressable
             style={{ position: "absolute", right: 0, top: 0, paddingRight: 10 }}
             onPress={() => props.onClose(false)}
@@ -47,7 +47,7 @@ const ConfigModal: React.FC<Props> = (props) => {
             </Text>
           </Pressable>
           <ScrollView style={{ flex: 1 }}>
-            <Text style={styles.heading}>Custom Script</Text>
+            <Text style={styles.heading}>カスタムスクリプト (UserScript)</Text>
             <TextInput
               multiline={true}
               value={script}
@@ -59,13 +59,13 @@ const ConfigModal: React.FC<Props> = (props) => {
             style={[styles.button, styles.buttonRemove]}
             onPress={() => props.onClose(null)}
           >
-            <Text style={styles.textStyle}>Remove this server</Text>
+            <Text style={styles.textStyle}>サーバーを削除</Text>
           </Pressable>
           <Pressable
             style={[styles.button, styles.buttonSave]}
             onPress={saveAndClose}
           >
-            <Text style={styles.textStyle}>Save and close</Text>
+            <Text style={styles.textStyle}>保存して閉じる</Text>
           </Pressable>
         </View>
       </View>

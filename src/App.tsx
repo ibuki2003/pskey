@@ -72,13 +72,13 @@ export default function App() {
             .map(([k, v]) => (
               <Picker.Item key={k} label={v.name} value={k} />
             ))}
-          <Picker.Item label="Add another server" value="_add" />
+          <Picker.Item label="別のサーバーを追加" value="_add" />
         </Picker>
 
         <DialogInput
           isDialogVisible={addServerModalVisible || servers.servers.size === 0}
-          title="Add Server"
-          message="Please enter the server URL."
+          title="サーバーを追加する"
+          message="サーバーURLを入力してください"
           hintInput={"misskey.io"}
           submitInput={async (v: string) => {
             servers.add(v);
@@ -96,7 +96,7 @@ export default function App() {
           }}
           role="button"
         >
-          <Text style={styles.menuButtonText} aria-label="server configuration">
+          <Text style={styles.menuButtonText} aria-label="サーバーの設定">
             ...
           </Text>
         </Pressable>
