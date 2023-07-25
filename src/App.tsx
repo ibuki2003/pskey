@@ -18,6 +18,7 @@ import { Picker } from "@react-native-picker/picker";
 import { registerRootComponent } from "expo";
 import { setBackgroundColorAsync } from "expo-navigation-bar";
 import { StatusBar as ExpoStatusBar } from "expo-status-bar";
+import { normalizeServerURL } from "./utils";
 
 export default function App() {
   const [addServerModalVisible, setModalVisible] = React.useState(false);
@@ -81,8 +82,17 @@ export default function App() {
           message="サーバーURLを入力してください"
           hintInput={"misskey.io"}
           submitInput={async (v: string) => {
-            servers.add(v);
-            setModalVisible(false);
+            try { v = normalizeServerURL(v); } catch(e) {
+              Alert.alert("サーバーURLの形式が間違っています。", "入力したURLが正しいか確認してください。");
+              return;
+              }
+            await servers.add(v)
+              .then(() => {
+                setModalVisible(false);
+              })
+              .catch((e) => {
+                Alert.alert("サーバー情報の取得に失敗しました。", "入力したURLが正しいか確認してください。\n" + e.message);
+              });
           }}
           closeDialog={() => {
             setModalVisible(false);
