@@ -40,8 +40,11 @@ const ConfigModal: React.FC<Props> = (props) => {
           <Pressable
             style={{ position: "absolute", right: 0, top: 0, paddingRight: 10 }}
             onPress={() => props.onClose(false)}
+            role="button"
           >
-            <Text style={{ fontSize: 30 }}>x</Text>
+            <Text style={{ fontSize: 30 }} aria-label="close">
+              x
+            </Text>
           </Pressable>
           <ScrollView style={{ flex: 1 }}>
             <Text style={styles.heading}>Custom Script</Text>

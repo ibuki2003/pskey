@@ -94,8 +94,11 @@ export default function App() {
           onPress={() => {
             setConfigModal(servers.selected);
           }}
+          role="button"
         >
-          <Text style={styles.menuButtonText}>...</Text>
+          <Text style={styles.menuButtonText} aria-label="server configuration">
+            ...
+          </Text>
         </Pressable>
       </View>
       {configModal && (
