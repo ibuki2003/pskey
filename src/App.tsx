@@ -36,6 +36,7 @@ export default function App() {
     () => lightOrDarkColor(backgroundColor) === "dark",
     [backgroundColor]
   );
+  console.log({ isDark });
 
   const servers = ServerConfig.useServers();
 
@@ -65,7 +66,8 @@ export default function App() {
             }
           }}
           mode="dropdown"
-          style={{ flex: 1 }}
+          style={[{ flex: 1 }, isDark && styles.textDarkTheme]}
+          dropdownIconColor={isDark ? "#fff" : "#000"}
         >
           {/* TODO: contentDescription; not released yet */}
           {Array.from(servers.servers)
@@ -106,7 +108,10 @@ export default function App() {
           }}
           role="button"
         >
-          <Text style={styles.menuButtonText} aria-label="サーバーの設定">
+          <Text
+            style={[styles.menuButtonText, isDark && styles.textDarkTheme]}
+            aria-label="サーバーの設定"
+          >
             ...
           </Text>
         </Pressable>
@@ -160,7 +165,6 @@ export default function App() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#fff",
     alignItems: "stretch",
     justifyContent: "center",
     paddingTop: Platform.OS === "android" ? StatusBar.currentHeight : 0,
@@ -177,6 +181,10 @@ const styles = StyleSheet.create({
     color: "#000",
     fontWeight: "bold",
     textAlign: "center",
+  },
+
+  textDarkTheme: {
+    color: "#fff",
   },
 });
 
