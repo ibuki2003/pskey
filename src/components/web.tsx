@@ -75,6 +75,7 @@ const Web: React.FC<WebProps & React.ComponentProps<typeof WebView>> = ({
       source={{ uri }}
       scrollEnabled={false}
       applicationNameForUserAgent="Pskey mobile" // including 'mobile' to use mobile layout
+      webviewDebuggingEnabled={true}
       injectedJavaScriptBeforeContentLoadedForMainFrameOnly={true}
       injectedJavaScriptBeforeContentLoaded={
         BASE_SCRIPT +
