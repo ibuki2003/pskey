@@ -18,16 +18,18 @@ type MisskeyMeta = {
 
 const SERVERS_KEY = "servers";
 
+function fixServerConfig(serverConfig: Partial<ServerConfig>): ServerConfig {
+  serverConfig.lastUsedAt ??= Date.now();
+
+  if (!("userScripts" in serverConfig)) {
+    serverConfig.userScripts = [];
+  }
+
+  return serverConfig as ServerConfig;
+}
+
 async function loadServers(): Promise<ServerConfig[]> {
-  return (await storage.getAllDataForKey(SERVERS_KEY)).map((server) => {
-    // migration
-
-    if (!("userScripts" in server)) {
-      server.userScripts = [];
-    }
-
-    return server;
-  });
+  return (await storage.getAllDataForKey(SERVERS_KEY)).map(fixServerConfig);
 }
 
 async function fetchServerInfo(domain: string) {
@@ -43,8 +45,6 @@ async function fetchServerInfo(domain: string) {
     domain,
     name: metadata.name,
     iconUrl: metadata.iconUrl,
-
-    lastUsedAt: Date.now(),
   };
 }
 
@@ -86,7 +86,7 @@ export function useServers() {
 
   const add = React.useCallback(
     async (domain: string) => {
-      const server = await fetchServerInfo(domain);
+      const server = fixServerConfig(await fetchServerInfo(domain));
       servers.set(domain, server);
       saveServer(domain, server);
       setSelectedServer(domain);
