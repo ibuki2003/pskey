@@ -1,6 +1,6 @@
 {
   "expo": {
-    "name": "pskey",
+    "name": "PSkey",
     "slug": "pskey",
     "version": "1.0.0",
     "orientation": "portrait",
@@ -21,10 +21,16 @@
       "adaptiveIcon": {
         "foregroundImage": "./src/assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
-      }
+      },
+      "package": "dev.fuwa.pskey"
     },
     "web": {
       "favicon": "./src/assets/favicon.png"
+    },
+    "extra": {
+      "eas": {
+        "projectId": "527fe02e-929e-458c-876a-ae76b6e854db"
+      }
     }
   }
 }
