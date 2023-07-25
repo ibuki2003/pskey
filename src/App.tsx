@@ -11,6 +11,7 @@ import {
 import { Pressable } from "react-native";
 import DialogInput from "react-native-dialog-input";
 import ConfigModal from "./components/configModal";
+import { normalizeServerURL } from "./utils";
 import Web from "@/components/web";
 import * as ServerConfig from "@/serverConfig";
 import lightOrDarkColor from "@check-light-or-dark/color";
@@ -18,7 +19,6 @@ import { Picker } from "@react-native-picker/picker";
 import { registerRootComponent } from "expo";
 import { setBackgroundColorAsync } from "expo-navigation-bar";
 import { StatusBar as ExpoStatusBar } from "expo-status-bar";
-import { normalizeServerURL } from "./utils";
 
 export default function App() {
   const [addServerModalVisible, setModalVisible] = React.useState(false);
@@ -84,16 +84,25 @@ export default function App() {
           message="サーバーURLを入力してください"
           hintInput={"misskey.io"}
           submitInput={async (v: string) => {
-            try { v = normalizeServerURL(v); } catch(e) {
-              Alert.alert("サーバーURLの形式が間違っています。", "入力したURLが正しいか確認してください。");
+            try {
+              v = normalizeServerURL(v);
+            } catch (e) {
+              Alert.alert(
+                "サーバーURLの形式が間違っています。",
+                "入力したURLが正しいか確認してください。"
+              );
               return;
-              }
-            await servers.add(v)
+            }
+            await servers
+              .add(v)
               .then(() => {
                 setModalVisible(false);
               })
               .catch((e) => {
-                Alert.alert("サーバー情報の取得に失敗しました。", "入力したURLが正しいか確認してください。\n" + e.message);
+                Alert.alert(
+                  "サーバー情報の取得に失敗しました。",
+                  "入力したURLが正しいか確認してください。\n" + e.message
+                );
               });
           }}
           closeDialog={() => {
