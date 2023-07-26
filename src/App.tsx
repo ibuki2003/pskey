@@ -14,6 +14,7 @@ import WebView from "react-native-webview";
 import ConfigModal from "./components/configModal";
 import { normalizeServerURL } from "./utils";
 import Web from "@/components/web";
+import { useTranslation } from "@/i18n";
 import * as ServerConfig from "@/serverConfig";
 import lightOrDarkColor from "@check-light-or-dark/color";
 import { Picker } from "@react-native-picker/picker";
@@ -22,6 +23,8 @@ import { setBackgroundColorAsync } from "expo-navigation-bar";
 import { StatusBar as ExpoStatusBar } from "expo-status-bar";
 
 export default function App() {
+  const { t } = useTranslation();
+
   const [addServerModalVisible, setModalVisible] = React.useState(false);
 
   const [configModal, setConfigModal] = React.useState<string | null>(null);
@@ -78,22 +81,19 @@ export default function App() {
             .map(([k, v]) => (
               <Picker.Item key={k} label={v.name} value={k} />
             ))}
-          <Picker.Item label="別のサーバーを追加" value="_add" />
+          <Picker.Item label={t("addServer")} value="_add" />
         </Picker>
 
         <DialogInput
           isDialogVisible={addServerModalVisible || servers.servers.size === 0}
-          title="サーバーを追加する"
-          message="サーバーURLを入力してください"
+          title={t("addingServer")}
+          message={t("enterServerURL")}
           hintInput={"misskey.io"}
           submitInput={async (v: string) => {
             try {
               v = normalizeServerURL(v);
             } catch (e) {
-              Alert.alert(
-                "サーバーURLの形式が間違っています。",
-                "入力したURLが正しいか確認してください。"
-              );
+              Alert.alert(t("invalidURL"), t("confirmYourURL"));
               return;
             }
             await servers
@@ -103,8 +103,8 @@ export default function App() {
               })
               .catch((e) => {
                 Alert.alert(
-                  "サーバー情報の取得に失敗しました。",
-                  "入力したURLが正しいか確認してください。\n" + e.message
+                  t("failedToFetchServer"),
+                  t("confirmYourURL") + "\n" + e.message
                 );
               });
           }}
@@ -122,7 +122,7 @@ export default function App() {
         >
           <Text
             style={[styles.menuButtonText, isDark && styles.textDarkTheme]}
-            aria-label="サーバーの設定"
+            aria-label={t("serverConfig")}
           >
             ...
           </Text>
@@ -139,8 +139,11 @@ export default function App() {
             }
             if (v === null) {
               Alert.alert(
-                "Are you sure?",
-                'Delete "' + servers.servers.get(configModal)!.name + '"',
+                t("deletingServer_s").replace(
+                  "%s",
+                  servers.servers.get(configModal)!.name
+                ),
+                t("areYouSure"),
                 [
                   { text: "Cancel", onPress: () => {}, style: "cancel" },
                   {
