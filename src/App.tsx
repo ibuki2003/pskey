@@ -10,6 +10,7 @@ import {
 } from "react-native";
 import { Pressable } from "react-native";
 import DialogInput from "react-native-dialog-input";
+import WebView from "react-native-webview";
 import ConfigModal from "./components/configModal";
 import { normalizeServerURL } from "./utils";
 import Web from "@/components/web";
@@ -39,6 +40,8 @@ export default function App() {
   console.log({ isDark });
 
   const servers = ServerConfig.useServers();
+
+  const webRef = React.useRef<WebView>(null);
 
   if (servers.loading) {
     return <Text>Loading...</Text>;
@@ -152,6 +155,7 @@ export default function App() {
               );
             } else {
               servers.update(configModal, v);
+              webRef.current?.reload();
               setConfigModal(null);
             }
           }}
@@ -162,9 +166,11 @@ export default function App() {
       ) : (
         <Web
           uri={`https://${servers.selected}`}
+          key={servers.selected}
           style={styles.webview}
           onBGColorChange={(color) => setBackgroundColor(color)}
           userScripts={servers.servers.get(servers.selected)!.userScripts}
+          ref={webRef}
         />
       )}
     </View>

@@ -7,6 +7,7 @@ interface WebProps {
   onBGColorChange: (color: string) => void;
   userScripts?: string[];
 }
+type Props = WebProps & React.ComponentProps<typeof WebView>;
 
 const BASE_SCRIPT = `
 (() => {
@@ -38,18 +39,31 @@ const BASE_SCRIPT = `
 
 `;
 
-const Web: React.FC<WebProps & React.ComponentProps<typeof WebView>> = ({
-  uri,
-  onBGColorChange,
-  userScripts,
-  ...props
-}) => {
-  const webViewRef = React.useRef<WebView>(null);
+function useForwardedRef<T>(ref: React.ForwardedRef<T>) {
+  const innerRef = React.useRef<T>(null);
+
+  React.useEffect(() => {
+    if (!ref) return;
+    if (typeof ref === "function") {
+      ref(innerRef.current);
+    } else {
+      ref.current = innerRef.current;
+    }
+  }, [ref]);
+
+  return innerRef;
+}
+
+const Web: React.ForwardRefRenderFunction<WebView, Props> = (
+  { uri, onBGColorChange, userScripts, ...props },
+  webViewRef
+) => {
+  const innerRef = useForwardedRef(webViewRef);
 
   const handleBack = React.useCallback(() => {
     console.log("handleBack");
     try {
-      const c = webViewRef.current;
+      const c = innerRef.current;
       if (c) {
         c.goBack();
         return true;
@@ -59,7 +73,7 @@ const Web: React.FC<WebProps & React.ComponentProps<typeof WebView>> = ({
     }
     // BackHandler.exitApp();
     return undefined;
-  }, [webViewRef]);
+  }, [innerRef.current]);
 
   React.useEffect(() => {
     BackHandler.addEventListener("hardwareBackPress", handleBack);
@@ -71,7 +85,7 @@ const Web: React.FC<WebProps & React.ComponentProps<typeof WebView>> = ({
   return (
     <WebView
       {...props}
-      ref={webViewRef}
+      ref={innerRef}
       source={{ uri }}
       scrollEnabled={false}
       applicationNameForUserAgent="Pskey mobile" // including 'mobile' to use mobile layout
@@ -99,4 +113,4 @@ const Web: React.FC<WebProps & React.ComponentProps<typeof WebView>> = ({
   );
 };
 
-export default Web;
+export default React.forwardRef<WebView, Props>(Web);
