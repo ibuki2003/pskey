@@ -39,7 +39,10 @@ const BASE_SCRIPT = `
   }, 10);
 })();
 
-`;
+`
+  // simple "minifier"
+  .replace(/\/\/.*$/gm, "")
+  .replace(/[ \t\r\n]+/gs, " ");
 
 function useForwardedRef<T>(ref: React.ForwardedRef<T>) {
   const innerRef = React.useRef<T>(null);
