@@ -1,10 +1,11 @@
 import React from "react";
 import { BackHandler } from "react-native";
 import { WebView } from "react-native-webview";
+import { MKTheme } from "@/theme";
 
 interface WebProps {
   uri: string;
-  onBGColorChange: (color: string) => void;
+  onThemeChange: (newTheme: MKTheme) => void;
   userScripts?: string[];
 }
 type Props = WebProps & React.ComponentProps<typeof WebView>;
@@ -12,13 +13,14 @@ type Props = WebProps & React.ComponentProps<typeof WebView>;
 const BASE_SCRIPT = `
 (() => {
   window.addEventListener('load', () => {
-    let value = '#fff';
+    let value = '#000;#fff';
     const styleObserver = new MutationObserver((mutations) => {
-      const currentValue = mutations[0].target.style.getPropertyValue('--bg');
+      const s = mutations[0].target.style;
+      const currentValue = s.getPropertyValue('--fg') + ';' + s.getPropertyValue('--bg');
 
       if (currentValue !== value) {
         value = currentValue;
-        window.ReactNativeWebView.postMessage(JSON.stringify({ type: 'bgcolor', value }))
+        window.ReactNativeWebView.postMessage(JSON.stringify({ type: 'theme', value }))
       }
     });
 
@@ -55,7 +57,7 @@ function useForwardedRef<T>(ref: React.ForwardedRef<T>) {
 }
 
 const Web: React.ForwardRefRenderFunction<WebView, Props> = (
-  { uri, onBGColorChange, userScripts, ...props },
+  { uri, onThemeChange, userScripts, ...props },
   webViewRef
 ) => {
   const innerRef = useForwardedRef(webViewRef);
@@ -107,7 +109,12 @@ const Web: React.ForwardRefRenderFunction<WebView, Props> = (
         };
         console.log({ type, value });
 
-        if (type === "bgcolor") onBGColorChange(value);
+        if (type === "theme") {
+          const [fg, bg] = value.split(";");
+          onThemeChange({ foreground: fg, background: bg });
+        } else {
+          console.log("got unknown message type", type);
+        }
       }}
     />
   );

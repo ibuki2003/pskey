@@ -10,6 +10,7 @@ import {
 } from "react-native";
 import { useTranslation } from "@/i18n";
 import { ServerConfig } from "@/serverConfig";
+import { useTheme } from "@/theme";
 
 interface Props {
   oldConfig: ServerConfig;
@@ -21,6 +22,10 @@ interface Props {
 
 const ConfigModal: React.FC<Props> = (props) => {
   const { t } = useTranslation();
+  const theme = useTheme();
+  const [style_fg, style_bg] = React.useMemo(() => {
+    return [{ color: theme.foreground }, { backgroundColor: theme.background }];
+  }, [theme]);
 
   const [script, setScript] = React.useState("");
 
@@ -38,8 +43,8 @@ const ConfigModal: React.FC<Props> = (props) => {
   return (
     <Modal animationType="none" transparent={true} visible={props.open}>
       <View style={styles.centeredView}>
-        <View style={styles.modalView}>
-          <Text style={styles.modalTitle}>
+        <View style={[styles.modalView, style_bg]}>
+          <Text style={[styles.modalTitle, style_fg]}>
             {t("serverConfig_s").replace("{}", props.oldConfig.name)}
           </Text>
           <Pressable
@@ -47,24 +52,24 @@ const ConfigModal: React.FC<Props> = (props) => {
             onPress={() => props.onClose(false)}
             role="button"
           >
-            <Text style={{ fontSize: 30 }} aria-label="close">
+            <Text style={[{ fontSize: 30 }, style_fg]} aria-label="close">
               x
             </Text>
           </Pressable>
           <ScrollView style={{ flex: 1 }}>
-            <Text style={styles.heading}>{t("customScript")}</Text>
+            <Text style={[styles.heading, style_fg]}>{t("customScript")}</Text>
             <TextInput
               multiline={true}
               value={script}
               onChangeText={setScript}
-              style={styles.codeEditor}
+              style={[styles.codeEditor, style_fg]}
             />
           </ScrollView>
           <Pressable
             style={[styles.button, styles.buttonRemove]}
             onPress={() => props.onClose(null)}
           >
-            <Text style={styles.textStyle}>{t("deleteThisServer")}</Text>
+            <Text style={[styles.textStyle]}>{t("deleteThisServer")}</Text>
           </Pressable>
           <Pressable
             style={[styles.button, styles.buttonSave]}
@@ -90,7 +95,6 @@ const styles = StyleSheet.create({
     width: "90%",
     height: "95%",
     margin: 10,
-    backgroundColor: "white",
     borderRadius: 5,
     padding: 15,
     alignItems: "stretch",
@@ -98,7 +102,6 @@ const styles = StyleSheet.create({
   },
 
   textStyle: {
-    color: "white",
     fontWeight: "bold",
     textAlign: "center",
   },
