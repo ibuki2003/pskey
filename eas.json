@@ -10,7 +10,10 @@
     "preview": {
       "distribution": "internal"
     },
-    "production": {}
+    "production": {},
+    "production_apk": {
+      "distribution": "internal"
+    }
   },
   "submit": {
     "production": {}
