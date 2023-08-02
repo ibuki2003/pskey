@@ -6,6 +6,9 @@ const ja = {
   customScript: "カスタムスクリプト (JavaScript)",
   deleteThisServer: "このサーバーを削除する",
   deletingServer: "{{serverName}} を削除します",
+  download: "ダウンロード",
+  doYouWantToDownload:
+    "ファイルをダウンロードしますか？\n(ブラウザで開かれることがあります)",
   enterServerURL: "サーバーのURLを入力してください",
   failedToFetchServer: "サーバー情報の取得に失敗しました。",
   invalidURL: "間違ったURLです。",

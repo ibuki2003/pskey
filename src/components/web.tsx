@@ -1,5 +1,7 @@
 import React from "react";
+import { useTranslation } from "react-i18next";
 import { BackHandler } from "react-native";
+import Dialog from "react-native-dialog";
 import { WebView } from "react-native-webview";
 import { MKTheme } from "@/theme";
 
@@ -31,6 +33,12 @@ const BASE_SCRIPT = `
     styleObserver.observe(document.documentElement, {
       attributes: true,
       attributeFilter: ['style'],
+    });
+
+    document.body.addEventListener('contextmenu', (e) => {
+      const t = e.target;
+      if (!t.classList.contains('pswp__img')) return;
+      window.ReactNativeWebView.postMessage(JSON.stringify({ type: 'pressImage', value: t.getAttribute('src') }));
     });
   });
 
@@ -67,9 +75,13 @@ const Web: React.ForwardRefRenderFunction<WebView, Props> = (
   { uri, onThemeChange, onOpenExternalURL, userScripts, innerKey, ...props },
   webViewRef
 ) => {
+  const { t } = useTranslation();
+
   const innerRef = useForwardedRef(webViewRef);
 
   const [wvKey, refreshWv] = React.useReducer((x) => x + 1, 0);
+
+  const [DLTarget, setDLTarget] = React.useState<string | null>(null);
 
   const handleBack = React.useCallback(() => {
     console.log("handleBack");
@@ -94,45 +106,66 @@ const Web: React.ForwardRefRenderFunction<WebView, Props> = (
   }, []);
 
   return (
-    <WebView
-      {...props}
-      ref={innerRef}
-      source={{ uri }}
-      key={(innerKey ?? uri) + wvKey.toString()}
-      scrollEnabled={false}
-      applicationNameForUserAgent="Pskey mobile" // including 'mobile' to use mobile layout
-      webviewDebuggingEnabled={true}
-      onRenderProcessGone={() => {
-        refreshWv();
-      }}
-      onOpenWindow={(e) => {
-        onOpenExternalURL?.(e.nativeEvent.targetUrl);
-      }}
-      injectedJavaScriptBeforeContentLoadedForMainFrameOnly={true}
-      injectedJavaScriptBeforeContentLoaded={
-        BASE_SCRIPT +
-        (userScripts?.length
-          ? userScripts
-              .map((s) => "try {\n" + s + "} catch (e) {alert(e);}")
-              .join("\n\n\n")
-          : "") +
-        "\n\n\ntrue\n"
-      }
-      onMessage={(event) => {
-        const { type, value } = JSON.parse(event.nativeEvent.data) as {
-          type: string;
-          value: string;
-        };
-        console.log({ type, value });
-
-        if (type === "theme") {
-          const [fg, bg] = value.split(";");
-          onThemeChange({ foreground: fg, background: bg });
-        } else {
-          console.log("got unknown message type", type);
+    <>
+      <WebView
+        {...props}
+        ref={innerRef}
+        source={{ uri }}
+        key={(innerKey ?? uri) + wvKey.toString()}
+        scrollEnabled={false}
+        applicationNameForUserAgent="Pskey mobile" // including 'mobile' to use mobile layout
+        webviewDebuggingEnabled={true}
+        onRenderProcessGone={() => {
+          refreshWv();
+        }}
+        onOpenWindow={(e) => {
+          onOpenExternalURL?.(e.nativeEvent.targetUrl);
+        }}
+        injectedJavaScriptBeforeContentLoadedForMainFrameOnly={true}
+        injectedJavaScriptBeforeContentLoaded={
+          BASE_SCRIPT +
+          (userScripts?.length
+            ? userScripts
+                .map((s) => "try {\n" + s + "} catch (e) {alert(e);}")
+                .join("\n\n\n")
+            : "") +
+          "\n\n\ntrue\n"
         }
-      }}
-    />
+        onMessage={(event) => {
+          const { type, value } = JSON.parse(event.nativeEvent.data) as {
+            type: string;
+            value: string;
+          };
+          console.log({ type, value });
+
+          if (type === "theme") {
+            const [fg, bg] = value.split(";");
+            onThemeChange({ foreground: fg, background: bg });
+          } else if (type === "pressImage") {
+            console.log("pressImage", value);
+            setDLTarget(value);
+          } else {
+            console.log("got unknown message type", type);
+          }
+        }}
+      />
+      <Dialog.Container visible={!!DLTarget}>
+        <Dialog.Title>{t("download")}</Dialog.Title>
+        <Dialog.Description>{t("doYouWantToDownload")}</Dialog.Description>
+        <Dialog.Button label="Cancel" onPress={() => setDLTarget(null)} />
+        <Dialog.Button
+          label="OK"
+          onPress={() => {
+            innerRef.current?.injectJavaScript(
+              `(() => { const e = document.createElement('a'); e.href = ${JSON.stringify(
+                DLTarget
+              )}; e.download = ''; e.target = '_blank'; e.click(); })();`
+            );
+            setDLTarget(null);
+          }}
+        />
+      </Dialog.Container>
+    </>
   );
 };
 
