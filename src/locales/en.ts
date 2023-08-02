@@ -7,13 +7,13 @@ const en: Locale = {
   confirmYourURL: "Please confirm URL.",
   customScript: "Custom Script (JavaScript)",
   deleteThisServer: "Delete this server",
-  deletingServer_s: "Delete {}",
+  deletingServer: "Delete {{serverName}}",
   enterServerURL: "Enter server URL",
   failedToFetchServer: "Failed to fetch server information.",
   invalidURL: "Invalid URL.",
   saveAndClose: "Save and Close",
   serverConfig: "Server Configurations",
-  serverConfig_s: "Configurations for {}",
+  serverConfigFor: "Configurations for {{serverName}}",
   wrongServerURL: "Wrong server URL.",
 };
 export default en;

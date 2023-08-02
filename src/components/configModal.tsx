@@ -45,7 +45,7 @@ const ConfigModal: React.FC<Props> = (props) => {
       <View style={styles.centeredView}>
         <View style={[styles.modalView, style_bg]}>
           <Text style={[styles.modalTitle, style_fg]}>
-            {t("serverConfig_s").replace("{}", props.oldConfig.name)}
+            {t("serverConfigFor", { serverName: props.oldConfig.name })}
           </Text>
           <Pressable
             style={{ position: "absolute", right: 0, top: 0, paddingRight: 10 }}

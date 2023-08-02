@@ -1,22 +1,4 @@
-type LocaleKeys = [
-  "addServer",
-  "addingServer",
-  "areYouSure",
-  "confirmYourURL",
-  "customScript",
-  "deleteThisServer",
-  "deletingServer_s",
-  "enterServerURL",
-  "failedToFetchServer",
-  "invalidURL",
-  "saveAndClose",
-  "serverConfig",
-  "serverConfig_s",
-  "wrongServerURL",
-][number];
+import ja from "./ja";
 
-type Locale = {
-  [key in LocaleKeys]: string;
-};
-
+type Locale = Record<keyof typeof ja, string>;
 export default Locale;

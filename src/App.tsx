@@ -149,10 +149,9 @@ export default function App() {
               }
               if (v === null) {
                 Alert.alert(
-                  t("deletingServer_s").replace(
-                    "%s",
-                    servers.servers.get(configModal)!.name
-                  ),
+                  t("deletingServer", {
+                    serverName: servers.servers.get(configModal)!.name,
+                  }),
                   t("areYouSure"),
                   [
                     { text: "Cancel", onPress: () => {}, style: "cancel" },
