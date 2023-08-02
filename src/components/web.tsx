@@ -12,6 +12,8 @@ type Props = WebProps & React.ComponentProps<typeof WebView>;
 
 const BASE_SCRIPT = `
 (() => {
+  if (!window.ReactNativeWebView) return;
+
   window.addEventListener('load', () => {
     let value = '#000;#fff';
     const styleObserver = new MutationObserver((mutations) => {
