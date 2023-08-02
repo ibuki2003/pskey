@@ -9,7 +9,7 @@ import {
   View,
 } from "react-native";
 import { Pressable } from "react-native";
-import DialogInput from "react-native-dialog-input";
+import Dialog from "react-native-dialog";
 import WebView from "react-native-webview";
 import ConfigModal from "./components/configModal";
 import { normalizeServerURL } from "./utils";
@@ -91,15 +91,14 @@ export default function App() {
               ))}
             <Picker.Item label={t("addServer")} value="_add" />
           </Picker>
-
-          <DialogInput
-            isDialogVisible={
-              addServerModalVisible || servers.servers.size === 0
-            }
-            title={t("addingServer")}
-            message={t("enterServerURL")}
-            hintInput={"misskey.io"}
-            submitInput={async (v: string) => {
+          <ServerAddDialog
+            visible={addServerModalVisible || servers.servers.size === 0}
+            cancellable={servers.servers.size > 0}
+            onClose={async (v: string | null) => {
+              if (v === null) {
+                setModalVisible(false);
+                return;
+              }
               try {
                 v = normalizeServerURL(v);
               } catch (e) {
@@ -117,9 +116,6 @@ export default function App() {
                     t("confirmYourURL") + "\n" + e.message
                   );
                 });
-            }}
-            closeDialog={() => {
-              setModalVisible(false);
             }}
           />
 
@@ -189,6 +185,48 @@ export default function App() {
     </ThemeProvider>
   );
 }
+
+const ServerAddDialog: React.FC<{
+  visible: boolean;
+  onClose: (v: string | null) => void;
+  cancellable?: boolean;
+}> = (props) => {
+  const { t } = useTranslation();
+  const [str, setStr] = React.useState("");
+
+  return (
+    <Dialog.Container visible={props.visible}>
+      <Dialog.Title>{t("addingServer")}</Dialog.Title>
+      <Dialog.Description>{t("enterServerURL")}</Dialog.Description>
+      <Dialog.Input
+        autoCapitalize="none"
+        placeholder={"misskey.io"}
+        onChangeText={setStr}
+        onSubmitEditing={() => {
+          props.onClose(str);
+          setStr("");
+        }}
+        value={str}
+      />
+
+      {props.cancellable && (
+        <Dialog.Button
+          label="Cancel"
+          onPress={() => {
+            props.onClose(null);
+          }}
+        />
+      )}
+      <Dialog.Button
+        label="OK"
+        onPress={() => {
+          props.onClose(str);
+          setStr("");
+        }}
+      />
+    </Dialog.Container>
+  );
+};
 
 const styles = StyleSheet.create({
   container: {
