@@ -36,5 +36,11 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
   },
   plugins: [
     "expo-localization",
+    [
+      "@digitalartlab/expo-plugin-localization",
+      {
+        locales: ["ja", "en"],
+      },
+    ],
   ],
 });

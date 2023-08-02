@@ -1222,6 +1222,11 @@
   resolved "https://registry.yarnpkg.com/@check-light-or-dark/utils/-/utils-1.0.1.tgz#bb4acb66d239c4ddf72ada208e23fb724c181ce7"
   integrity sha512-TaWUR2ub7MEFyKJQvOW2i4GQFCpOcs8qQKDzyJuCdhN9ktXmoY738RxpJKN+xhcECtbst88OguklGhPL8w4aMA==
 
+"@digitalartlab/expo-plugin-localization@^1.0.0":
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/@digitalartlab/expo-plugin-localization/-/expo-plugin-localization-1.0.0.tgz#adbad8b435906a06d758d5e566636d6c03b7f8c5"
+  integrity sha512-RaAQUyomgQe+iVe7PNsA0LAYKvg9xQG2AiPt+JhYYMHR5MY+2BfaEVXZlTVlAzHeNVBywcjc7mGkQXtXZgsAHw==
+
 "@eslint-community/eslint-utils@^4.2.0", "@eslint-community/eslint-utils@^4.4.0":
   version "4.4.0"
   resolved "https://registry.yarnpkg.com/@eslint-community/eslint-utils/-/eslint-utils-4.4.0.tgz#a23514e8fb9af1269d5f7788aa556798d61c6b59"
