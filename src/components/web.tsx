@@ -7,6 +7,7 @@ interface WebProps {
   uri: string;
   onThemeChange: (newTheme: MKTheme) => void;
   userScripts?: string[];
+  innerKey?: string;
 }
 type Props = WebProps & React.ComponentProps<typeof WebView>;
 
@@ -62,10 +63,12 @@ function useForwardedRef<T>(ref: React.ForwardedRef<T>) {
 }
 
 const Web: React.ForwardRefRenderFunction<WebView, Props> = (
-  { uri, onThemeChange, userScripts, ...props },
+  { uri, onThemeChange, userScripts, innerKey, ...props },
   webViewRef
 ) => {
   const innerRef = useForwardedRef(webViewRef);
+
+  const [wvKey, refreshWv] = React.useReducer((x) => x + 1, 0);
 
   const handleBack = React.useCallback(() => {
     console.log("handleBack");
@@ -94,9 +97,13 @@ const Web: React.ForwardRefRenderFunction<WebView, Props> = (
       {...props}
       ref={innerRef}
       source={{ uri }}
+      key={(innerKey ?? uri) + wvKey.toString()}
       scrollEnabled={false}
       applicationNameForUserAgent="Pskey mobile" // including 'mobile' to use mobile layout
       webviewDebuggingEnabled={true}
+      onRenderProcessGone={() => {
+        refreshWv();
+      }}
       injectedJavaScriptBeforeContentLoadedForMainFrameOnly={true}
       injectedJavaScriptBeforeContentLoaded={
         BASE_SCRIPT +
