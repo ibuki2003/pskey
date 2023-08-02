@@ -5,7 +5,7 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
 
   name: "PSkey",
   slug: "pskey",
-  version: "1.1.1",
+  version: "1.2.0",
   orientation: "portrait",
   icon: "./src/assets/icon.png",
   userInterfaceStyle: "light",
@@ -19,7 +19,7 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
     supportsTablet: true,
   },
   android: {
-    versionCode: 2,
+    versionCode: 3,
     adaptiveIcon: {
       foregroundImage: "./src/assets/adaptive-icon.png",
       backgroundColor: "#ffffff",
