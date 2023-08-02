@@ -20,6 +20,7 @@ import { MKTheme, ThemeProvider } from "@/theme";
 import lightOrDarkColor from "@check-light-or-dark/color";
 import { Picker } from "@react-native-picker/picker";
 import { registerRootComponent } from "expo";
+import * as Linking from "expo-linking";
 import { setBackgroundColorAsync } from "expo-navigation-bar";
 import { StatusBar as ExpoStatusBar } from "expo-status-bar";
 
@@ -173,11 +174,16 @@ export default function App() {
           <Text>No servers</Text>
         ) : (
           <Web
-            uri={`https://${servers.selected}`}
+            uri={`https://${servers.selected}${servers.path}`}
             key={servers.selected}
             style={styles.webview}
             onThemeChange={(newTheme) => setTheme(newTheme)}
             userScripts={servers.servers.get(servers.selected)!.userScripts}
+            onOpenExternalURL={(url) => {
+              if (!servers.openURL(url)) {
+                Linking.openURL(url);
+              }
+            }}
             ref={webRef}
           />
         )}

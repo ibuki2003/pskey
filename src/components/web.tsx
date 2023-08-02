@@ -6,6 +6,7 @@ import { MKTheme } from "@/theme";
 interface WebProps {
   uri: string;
   onThemeChange: (newTheme: MKTheme) => void;
+  onOpenExternalURL?: (url: string) => void;
   userScripts?: string[];
   innerKey?: string;
 }
@@ -63,7 +64,7 @@ function useForwardedRef<T>(ref: React.ForwardedRef<T>) {
 }
 
 const Web: React.ForwardRefRenderFunction<WebView, Props> = (
-  { uri, onThemeChange, userScripts, innerKey, ...props },
+  { uri, onThemeChange, onOpenExternalURL, userScripts, innerKey, ...props },
   webViewRef
 ) => {
   const innerRef = useForwardedRef(webViewRef);
@@ -103,6 +104,9 @@ const Web: React.ForwardRefRenderFunction<WebView, Props> = (
       webviewDebuggingEnabled={true}
       onRenderProcessGone={() => {
         refreshWv();
+      }}
+      onOpenWindow={(e) => {
+        onOpenExternalURL?.(e.nativeEvent.targetUrl);
       }}
       injectedJavaScriptBeforeContentLoadedForMainFrameOnly={true}
       injectedJavaScriptBeforeContentLoaded={

@@ -15,6 +15,7 @@
     "@react-native-async-storage/async-storage": "1.18.2",
     "@react-native-picker/picker": "^2.4.10",
     "expo": "~49.0.6",
+    "expo-linking": "~5.0.2",
     "expo-localization": "~14.3.0",
     "expo-navigation-bar": "~2.3.0",
     "expo-status-bar": "~1.6.0",
@@ -26,8 +27,9 @@
     "react-native-dialog": "^9.3.0",
     "react-native-dialog-input": "^1.0.8",
     "react-native-storage": "^1.0.1",
+    "react-native-url-polyfill": "^2.0.0",
     "react-native-web": "~0.19.7",
-    "react-native-webview": "13.2.2"
+    "react-native-webview": "13.3.1"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0",

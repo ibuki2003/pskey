@@ -1,4 +1,5 @@
 import React from "react";
+import "react-native-url-polyfill/auto";
 import storage from "@/storage";
 
 export interface ServerConfig {
@@ -72,12 +73,15 @@ export function useServers() {
 
   const [selected, setSelectedServer] = React.useState<string | null>(null);
 
+  const [path, setPath] = React.useState<string>("/");
+
   const [loading, setLoading] = React.useState(() => {
     loadServers().then((s) => {
       // setServers(servers.map((server) => server.name));
       servers.clear();
       s.forEach((server) => servers.set(server.domain, server));
       setSelectedServer(lastServerId());
+      setPath("/");
 
       setLoading(false);
     });
@@ -90,6 +94,7 @@ export function useServers() {
       servers.set(domain, server);
       saveServer(domain, server);
       setSelectedServer(domain);
+      setPath("/");
     },
     [setSelectedServer]
   );
@@ -99,6 +104,7 @@ export function useServers() {
       servers.delete(domain);
       await removeServer(domain);
       setSelectedServer(lastServerId());
+      setPath("/");
     },
     [setSelectedServer]
   );
@@ -116,10 +122,21 @@ export function useServers() {
   const select = React.useCallback(
     (domain: string) => {
       setSelectedServer(domain);
+      setPath("/");
       update(domain, { ...servers.get(domain)!, lastUsedAt: Date.now() });
     },
     [setSelectedServer, update]
   );
+
+  const openURL = (url: string) => {
+    const u = new URL(url);
+    if (servers.has(u.hostname) && selected !== u.hostname) {
+      select(u.hostname);
+      setPath(u.pathname);
+      return true;
+    }
+    return false;
+  };
 
   React.useEffect(() => {
     // refetch server info
@@ -136,9 +153,11 @@ export function useServers() {
     servers,
     loading,
     selected,
+    path,
     add,
     remove,
     update,
     select,
+    openURL,
   };
 }
