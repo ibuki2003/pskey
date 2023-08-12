@@ -1,27 +1,25 @@
 import React from "react";
 import {
   Alert,
+  Linking,
   Platform,
   SafeAreaView,
-  StatusBar,
   StyleSheet,
   Text,
   View,
-  Linking,
 } from "react-native";
 import { Pressable } from "react-native";
 import Dialog from "react-native-dialog";
 import WebView from "react-native-webview";
 import ConfigModal from "./components/configModal";
 import { normalizeServerURL } from "./utils";
+import { setBackgroundColor } from "@/background";
 import Web from "@/components/web";
 import { useTranslation } from "@/i18n";
 import * as ServerConfig from "@/serverConfig";
 import { MKTheme, ThemeProvider } from "@/theme";
 import lightOrDarkColor from "@check-light-or-dark/color";
 import { Picker } from "@react-native-picker/picker";
-import { setBackgroundColorAsync } from "expo-navigation-bar";
-import { StatusBar as ExpoStatusBar } from "expo-status-bar";
 
 export default function App() {
   const { t } = useTranslation();
@@ -34,20 +32,16 @@ export default function App() {
     background: "#fff",
     foreground: "#000",
   });
+
   React.useEffect(() => {
     if (Platform.OS === "android") {
-      setBackgroundColorAsync(theme.background);
+      const isLight = lightOrDarkColor(theme.background) === "light";
+      setBackgroundColor(theme.background, isLight);
     }
   }, [theme.background]);
   const [style_fg, style_bg] = React.useMemo(() => {
     return [{ color: theme.foreground }, { backgroundColor: theme.background }];
   }, [theme]);
-
-  const isDark = React.useMemo(
-    () => lightOrDarkColor(theme.background) === "dark",
-    [theme.background]
-  );
-  console.log({ isDark });
 
   const servers = ServerConfig.useServers();
 
@@ -61,7 +55,6 @@ export default function App() {
     <ThemeProvider value={theme}>
       <View style={[styles.container, style_bg]}>
         <SafeAreaView />
-        <ExpoStatusBar style={isDark ? "light" : "dark"} />
         <View
           style={{
             flexDirection: "row",
@@ -238,7 +231,6 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: "stretch",
     justifyContent: "center",
-    paddingTop: Platform.OS === "android" ? StatusBar.currentHeight : 0,
   },
 
   webview: {
