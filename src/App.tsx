@@ -9,6 +9,7 @@ import {
   View,
 } from "react-native";
 import { Pressable } from "react-native";
+import RNBootSplash from "react-native-bootsplash";
 import Dialog from "react-native-dialog";
 import WebView from "react-native-webview";
 import ConfigModal from "./components/configModal";
@@ -47,9 +48,9 @@ export default function App() {
 
   const webRef = React.useRef<WebView>(null);
 
-  if (servers.loading) {
-    return <Text>Loading...</Text>;
-  }
+  React.useEffect(() => {
+    if (!servers.loading) RNBootSplash.hide();
+  }, [servers.loading]);
 
   return (
     <ThemeProvider value={theme}>
