@@ -6062,6 +6062,16 @@ react-native-dialog@^9.3.0:
   resolved "https://registry.yarnpkg.com/react-native-dialog/-/react-native-dialog-9.3.0.tgz#9d745cc51653a1e2ae08076b46f11d99723c47f6"
   integrity sha512-JEOJY/0AzTM9grIl0BL8o/IJPIJru7k5MPj9POTE9RRezUEtgn0YSvCpTlBtG0obWgOdzg2otMz1OQvMXS0wMQ==
 
+react-native-localize@^3.0.2:
+  version "3.0.2"
+  resolved "https://registry.yarnpkg.com/react-native-localize/-/react-native-localize-3.0.2.tgz#43fa75c0097dbdb24a54ff320b3c8ad732407365"
+  integrity sha512-/l/oE1LVNgIRRhLbhmfFMHiWV0xhUn0A0iz1ytLVRYywL7FTp8Rx2vkJS/q/RpExDvV7yLw2493XZBYIM1dnLQ==
+
+react-native-navigation-bar-color@^2.0.2:
+  version "2.0.2"
+  resolved "https://registry.yarnpkg.com/react-native-navigation-bar-color/-/react-native-navigation-bar-color-2.0.2.tgz#2e14ca79a656d81d5b4b7433ae43966ef5206444"
+  integrity sha512-ZmpLWRocyme1au11e5ZuecMS/UCi57nlzgnioi03Q6ERMbeUOqqbWgNBaNB7SsCeqBV6fZPjo3+A64zEIpzw4w==
+
 react-native-storage@^1.0.1:
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/react-native-storage/-/react-native-storage-1.0.1.tgz#2c493875ff76ec301987c951a8302f3a54381241"

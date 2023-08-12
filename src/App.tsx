@@ -7,6 +7,7 @@ import {
   StyleSheet,
   Text,
   View,
+  Linking,
 } from "react-native";
 import { Pressable } from "react-native";
 import Dialog from "react-native-dialog";
@@ -19,8 +20,6 @@ import * as ServerConfig from "@/serverConfig";
 import { MKTheme, ThemeProvider } from "@/theme";
 import lightOrDarkColor from "@check-light-or-dark/color";
 import { Picker } from "@react-native-picker/picker";
-import { registerRootComponent } from "expo";
-import * as Linking from "expo-linking";
 import { setBackgroundColorAsync } from "expo-navigation-bar";
 import { StatusBar as ExpoStatusBar } from "expo-status-bar";
 
@@ -259,5 +258,3 @@ const styles = StyleSheet.create({
     color: "#fff",
   },
 });
-
-registerRootComponent(App);
