@@ -8,15 +8,15 @@ import kotlin.collections.ArrayList
 
 class MyAppPackage : ReactPackage {
 
-    override fun createViewManagers(reactContext: ReactApplicationContext)
-      = listOf(
-        ImagePickerManager(reactContext)
-      )
-
-    override fun createNativeModules(
-        reactContext: ReactApplicationContext
-    ) = listOf(
-        BackgroundColor(reactContext)
+  override fun createViewManagers(reactContext: ReactApplicationContext)
+    = listOf(
+      ImagePickerManager(reactContext)
     )
+
+  override fun createNativeModules(
+    reactContext: ReactApplicationContext
+  ) = listOf(
+    BackgroundColor(reactContext)
+  )
 
 }
