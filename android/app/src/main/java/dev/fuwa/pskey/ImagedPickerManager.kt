@@ -46,6 +46,7 @@ class ImagePickerManager(
           val v = items.getMap(i)
           ImagePickerItem(
             v.getString("label") ?: "",
+            v.getString("imageUrl") ?: "",
           )
         }
     }

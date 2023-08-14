@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import android.widget.BaseAdapter
 import android.widget.ImageView
 import android.widget.TextView
+import coil.load
 
 class ImagePickerAdapter(
   applicationContext: Context?,
@@ -33,7 +34,7 @@ class ImagePickerAdapter(
     val view = convertView ?: inflater.inflate(R.layout.imaged_spinner_item, parent, false)
     val icon = view.findViewById<View>(R.id.imageView) as ImageView
     val names = view.findViewById<View>(R.id.textView) as TextView
-    // icon.setImageResource(items[i].image)
+    icon.load(this.items[i].imageUrl)
     names.text = this.items[i].text
     return view
   }
@@ -41,5 +42,5 @@ class ImagePickerAdapter(
 
 class ImagePickerItem(
   public final val text: String,
-  // public final val imageUrl: String,
+  public final val imageUrl: String,
 )
