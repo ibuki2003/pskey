@@ -128,6 +128,10 @@ dependencies {
 
   implementation("androidx.core:core-splashscreen:1.0.1")
 
+  implementation 'androidx.lifecycle:lifecycle-process:2.6.1'
+  implementation 'io.coil-kt:coil:2.4.0'
+  implementation "io.coil-kt:coil-svg:2.4.0"
+
   debugImplementation("com.facebook.flipper:flipper:${FLIPPER_VERSION}")
   debugImplementation("com.facebook.flipper:flipper-network-plugin:${FLIPPER_VERSION}") {
     exclude group:'com.squareup.okhttp3', module:'okhttp'
