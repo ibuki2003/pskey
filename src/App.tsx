@@ -20,7 +20,7 @@ import { useTranslation } from "@/i18n";
 import * as ServerConfig from "@/serverConfig";
 import { MKTheme, ThemeProvider } from "@/theme";
 import lightOrDarkColor from "@check-light-or-dark/color";
-import { Picker } from "@react-native-picker/picker";
+import ImagedPicker from "./ImagedPicker";
 
 export default function App() {
   const { t } = useTranslation();
@@ -69,9 +69,9 @@ export default function App() {
             paddingHorizontal: 10,
           }}
         >
-          <Picker
-            selectedValue={servers.selected}
-            onValueChange={(itemValue) => {
+          <ImagedPicker
+            selectedValue={addServerModalVisible ? "_add" : servers.selected ?? "_add"}
+            onChange={(itemValue) => {
               if (itemValue === null) return;
               if (itemValue === "_add") {
                 setModalVisible(true);
@@ -79,18 +79,18 @@ export default function App() {
                 servers.select(itemValue);
               }
             }}
-            mode="dropdown"
-            style={[{ flex: 1 }, style_fg]}
-            dropdownIconColor={theme.foreground}
-          >
-            {/* TODO: contentDescription; not released yet */}
-            {Array.from(servers.servers)
+            style={[{ flex: 1 }, style_fg, style_bg]}
+            items={[
+              ...Array.from(servers.servers)
               .sort((a, b) => b[1].lastUsedAt - a[1].lastUsedAt)
-              .map(([k, v]) => (
-                <Picker.Item key={k} label={v.name} value={k} />
-              ))}
-            <Picker.Item label={t("addServer")} value="_add" />
-          </Picker>
+              .map(([k, v]) => ({
+                  value: k,
+                  label: v.name,
+                  imageUrl: v.iconUrl,
+                })),
+              {value: "_add", label: t("addServer"), imageUrl: ""}
+            ] }
+            />
           <ServerAddDialog
             visible={addServerModalVisible}
             cancellable={servers.servers.size > 0}
