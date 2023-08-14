@@ -52,6 +52,12 @@ export default function App() {
     if (!servers.loading) RNBootSplash.hide();
   }, [servers.loading]);
 
+  React.useEffect(() => {
+    if (!servers.loading && servers.servers.size === 0) {
+      setModalVisible(true);
+    }
+  }, [servers.servers.size, servers.loading]);
+
   return (
     <ThemeProvider value={theme}>
       <View style={[styles.container, style_bg]}>
@@ -86,7 +92,7 @@ export default function App() {
             <Picker.Item label={t("addServer")} value="_add" />
           </Picker>
           <ServerAddDialog
-            visible={addServerModalVisible || servers.servers.size === 0}
+            visible={addServerModalVisible}
             cancellable={servers.servers.size > 0}
             onClose={async (v: string | null) => {
               if (v === null) {
@@ -164,7 +170,7 @@ export default function App() {
           />
         )}
         {servers.selected === null ? (
-          <Text>No servers</Text>
+          <Text style={{flex: 1}}>No servers</Text>
         ) : (
           <Web
             uri={`https://${servers.selected}${servers.path}`}
