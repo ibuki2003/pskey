@@ -1,6 +1,7 @@
 package dev.fuwa.pskey
 
-import android.graphics.Color
+import android.graphics.PorterDuff
+import android.graphics.PorterDuffColorFilter
 import com.facebook.react.bridge.ReactContext
 import com.facebook.react.uimanager.UIManagerHelper.getReactContext
 import com.facebook.react.uimanager.UIManagerModule
@@ -14,13 +15,15 @@ class ImagedPicker(context: ReactContext): androidx.appcompat.widget.AppCompatSp
 
   var setSelection: Int = 0
 
-  fun setBackgroundColor(color: Int?) {
-    super.setBackgroundColor(color ?: Color.TRANSPARENT)
+  fun setPopupBackgroundColor(color: Int?) {
     (adapter as ImagePickerAdapter).backgroundColor = color
   }
 
   fun setColor(color: Int?) {
     (adapter as ImagePickerAdapter).color = color
+    if (color != null) {
+      background.colorFilter = PorterDuffColorFilter(color, PorterDuff.Mode.SRC_ATOP)
+    }
   }
 
   private val measureAndLayout = Runnable {

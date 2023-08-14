@@ -73,7 +73,7 @@ class ImagePickerManager(
 
   @ReactProp(name = ViewProps.BACKGROUND_COLOR)
   fun setBackgroundColor(view: ImagedPicker, backgroundColor: Int?) {
-    view.setBackgroundColor(backgroundColor)
+    view.setPopupBackgroundColor(backgroundColor)
   }
 
   override fun addEventEmitters(reactContext: ThemedReactContext, view: ImagedPicker) {
@@ -106,13 +106,11 @@ class ImagePickerManager(
     : AdapterView.OnItemSelectedListener {
 
     override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
-      if (picker != null) {
-        dispatcher.dispatchEvent(PickerItemSelectEvent(
-          UIManagerHelper.getSurfaceId(picker),
-          picker.id,
-          position
-        ))
-      }
+      dispatcher.dispatchEvent(PickerItemSelectEvent(
+        UIManagerHelper.getSurfaceId(picker),
+        picker.id,
+        position
+      ))
     }
 
     override fun onNothingSelected(parent: AdapterView<*>?) {
