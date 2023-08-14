@@ -15,10 +15,8 @@ class MainApplication : Application(), ReactApplication {
             return BuildConfig.DEBUG
         }
 
-        override fun getPackages(): List<ReactPackage> {
-            val packages: MutableList<ReactPackage> = PackageList(this).packages
-            packages.add(MyAppPackage())
-            return packages
+        override fun getPackages(): List<ReactPackage> = PackageList(this).packages.apply {
+          add(MyAppPackage())
         }
 
         override fun getJSMainModuleName(): String {
