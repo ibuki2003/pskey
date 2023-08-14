@@ -1,5 +1,5 @@
 import React from 'react';
-import { NativeSyntheticEvent, StyleProp, ViewStyle } from 'react-native';
+import { NativeSyntheticEvent, StyleProp, TextStyle, ViewStyle } from 'react-native';
 import {requireNativeComponent} from 'react-native';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -11,7 +11,7 @@ interface ImagedPickerProps {
 
   onChange: (value: string) => void;
 
-  style: StyleProp<ViewStyle>;
+  style: StyleProp<ViewStyle & TextStyle>;
 }
 
 const ImagedPicker: React.FC<ImagedPickerProps> = (props) => {

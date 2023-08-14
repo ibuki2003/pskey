@@ -1,5 +1,6 @@
 package dev.fuwa.pskey
 
+import android.graphics.Color
 import com.facebook.react.bridge.ReactContext
 import com.facebook.react.uimanager.UIManagerHelper.getReactContext
 import com.facebook.react.uimanager.UIManagerModule
@@ -9,6 +10,17 @@ class ImagedPicker(context: ReactContext): androidx.appcompat.widget.AppCompatSp
     //Getting the instance of Spinner and applying OnItemSelectedListener on it
     val customAdapter = ImagePickerAdapter(context)
     this.adapter = customAdapter
+  }
+
+  var setSelection: Int = 0
+
+  fun setBackgroundColor(color: Int?) {
+    super.setBackgroundColor(color ?: Color.TRANSPARENT)
+    (adapter as ImagePickerAdapter).backgroundColor = color
+  }
+
+  fun setColor(color: Int?) {
+    (adapter as ImagePickerAdapter).color = color
   }
 
   private val measureAndLayout = Runnable {

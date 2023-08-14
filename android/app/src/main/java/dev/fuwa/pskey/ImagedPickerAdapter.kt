@@ -1,6 +1,7 @@
 package dev.fuwa.pskey
 
 import android.content.Context
+import android.graphics.Color
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -24,6 +25,17 @@ class ImagePickerAdapter(
     inflater = LayoutInflater.from(applicationContext)
   }
 
+  var color: Int? = null
+    set(value) {
+      field = value
+      notifyDataSetChanged()
+    }
+  var backgroundColor: Int? = null
+    set(value) {
+      field = value
+      notifyDataSetChanged()
+    }
+
   override fun getCount(): Int { return items.size }
 
   override fun getItem(i: Int): Any? { return null }
@@ -32,8 +44,10 @@ class ImagePickerAdapter(
 
   override fun getView(i: Int, convertView: View?, parent: ViewGroup): View? {
     val view = convertView ?: inflater.inflate(R.layout.imaged_spinner_item, parent, false)
+    view.setBackgroundColor(backgroundColor ?: Color.TRANSPARENT)
     val icon = view.findViewById<View>(R.id.imageView) as ImageView
     val names = view.findViewById<View>(R.id.textView) as TextView
+    if (color != null) names.setTextColor(color!!)
     icon.load(this.items[i].imageUrl)
     names.text = this.items[i].text
     return view

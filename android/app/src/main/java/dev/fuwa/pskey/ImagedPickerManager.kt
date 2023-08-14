@@ -12,6 +12,7 @@ import com.facebook.react.uimanager.BaseViewManager
 import com.facebook.react.uimanager.LayoutShadowNode
 import com.facebook.react.uimanager.ThemedReactContext
 import com.facebook.react.uimanager.UIManagerHelper
+import com.facebook.react.uimanager.ViewProps
 import com.facebook.react.uimanager.annotations.ReactProp
 import com.facebook.react.uimanager.events.Event
 import com.facebook.react.uimanager.events.EventDispatcher
@@ -55,9 +56,24 @@ class ImagePickerManager(
   @ReactProp(name="selected")
   fun setSelected(view: ImagedPicker, selected: Int?) {
     if (selected != null) {
-      if ((0 <= selected) and (selected < view.adapter.count))
-        view.setSelection(selected)
+      view.setSelection = selected
     }
+  }
+
+  override fun onAfterUpdateTransaction(view: ImagedPicker) {
+    super.onAfterUpdateTransaction(view)
+    // force refresh selection
+    view.setSelection(view.setSelection)
+  }
+
+  @ReactProp(name = ViewProps.COLOR, customType = "Color")
+  fun setColor(view: ImagedPicker, color: Int?) {
+    view.setColor(color)
+  }
+
+  @ReactProp(name = ViewProps.BACKGROUND_COLOR)
+  fun setBackgroundColor(view: ImagedPicker, backgroundColor: Int?) {
+    view.setBackgroundColor(backgroundColor)
   }
 
   override fun addEventEmitters(reactContext: ThemedReactContext, view: ImagedPicker) {
