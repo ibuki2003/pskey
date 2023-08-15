@@ -103,7 +103,7 @@ export default function App() {
                 v = normalizeServerURL(v);
               } catch (e) {
                 Alert.alert(t("invalidURL"), t("confirmYourURL"));
-                return;
+                return Promise.reject();
               }
               await servers
                 .add(v)
@@ -115,6 +115,7 @@ export default function App() {
                     t("failedToFetchServer"),
                     t("confirmYourURL") + "\n" + e.message
                   );
+                  return Promise.reject();
                 });
             }}
           />
@@ -193,11 +194,24 @@ export default function App() {
 
 const ServerAddDialog: React.FC<{
   visible: boolean;
-  onClose: (v: string | null) => void;
+  onClose: (v: string | null) => Promise<void>;
   cancellable?: boolean;
 }> = (props) => {
   const { t } = useTranslation();
   const [str, setStr] = React.useState("");
+  const [pending, setPending] = React.useState(false);
+
+  const sendAndClose = () => {
+    setPending(true);
+    props.onClose(str)
+      .then(() => {
+        setStr("");
+      })
+      .catch(() => {})
+      .finally(() => {
+        setPending(false);
+      });
+  };
 
   return (
     <Dialog.Container visible={props.visible}>
@@ -207,16 +221,15 @@ const ServerAddDialog: React.FC<{
         autoCapitalize="none"
         placeholder={"misskey.io"}
         onChangeText={setStr}
-        onSubmitEditing={() => {
-          props.onClose(str);
-          setStr("");
-        }}
+        onSubmitEditing={sendAndClose}
         value={str}
       />
 
       {props.cancellable && (
         <Dialog.Button
           label="Cancel"
+          style={[pending && {opacity: 0.5}]}
+          disabled={pending}
           onPress={() => {
             props.onClose(null);
           }}
@@ -224,10 +237,9 @@ const ServerAddDialog: React.FC<{
       )}
       <Dialog.Button
         label="OK"
-        onPress={() => {
-          props.onClose(str);
-          setStr("");
-        }}
+        style={[pending && {opacity: 0.5}]}
+        disabled={pending}
+        onPress={sendAndClose}
       />
     </Dialog.Container>
   );
