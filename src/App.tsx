@@ -52,11 +52,10 @@ export default function App() {
     if (!servers.loading) RNBootSplash.hide();
   }, [servers.loading]);
 
+  const [firstTick, setFirstTick] = React.useState(true);
   React.useEffect(() => {
-    if (!servers.loading && servers.servers.size === 0) {
-      setModalVisible(true);
-    }
-  }, [servers.servers.size, servers.loading]);
+    setFirstTick(false);
+  }, []);
 
   return (
     <ThemeProvider value={theme}>
@@ -92,7 +91,7 @@ export default function App() {
             ] }
             />
           <ServerAddDialog
-            visible={addServerModalVisible}
+            visible={(addServerModalVisible || servers.servers.size === 0) && !firstTick}
             cancellable={servers.servers.size > 0}
             onClose={async (v: string | null) => {
               if (v === null) {
