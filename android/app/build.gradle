@@ -2,6 +2,8 @@ plugins {
   id("com.android.application")
   id("com.facebook.react")
   id("kotlin-android")
+
+  id("com.google.gms.google-services")
 }
 
 /**
@@ -128,10 +130,14 @@ dependencies {
   // implementation fileTree(dir: "libs", include: ["*.jar"])
 
   implementation("androidx.core:core-splashscreen:1.0.1")
+  implementation("com.android.support:support-compat:28.0.0")
 
   implementation 'androidx.lifecycle:lifecycle-process:2.6.1'
   implementation 'io.coil-kt:coil:2.4.0'
   implementation "io.coil-kt:coil-svg:2.4.0"
+
+  implementation(platform("com.google.firebase:firebase-bom:32.2.2"))
+  implementation 'com.google.firebase:firebase-messaging-ktx:23.2.1'
 
   debugImplementation("com.facebook.flipper:flipper:${FLIPPER_VERSION}")
   debugImplementation("com.facebook.flipper:flipper-network-plugin:${FLIPPER_VERSION}") {
