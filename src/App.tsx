@@ -12,15 +12,15 @@ import { Pressable } from "react-native";
 import RNBootSplash from "react-native-bootsplash";
 import Dialog from "react-native-dialog";
 import WebView from "react-native-webview";
-import ConfigModal from "./components/configModal";
-import { normalizeServerURL } from "./utils";
+import ImagedPicker from "@/ImagedPicker";
+import ConfigModal from "@/components/configModal";
+import { normalizeServerURL } from "@/utils";
 import { setBackgroundColor } from "@/background";
 import Web from "@/components/web";
 import { useTranslation } from "@/i18n";
 import * as ServerConfig from "@/serverConfig";
 import { MKTheme, ThemeProvider } from "@/theme";
 import lightOrDarkColor from "@check-light-or-dark/color";
-import ImagedPicker from "./ImagedPicker";
 
 export default function App() {
   const { t } = useTranslation();
@@ -69,7 +69,9 @@ export default function App() {
           }}
         >
           <ImagedPicker
-            selectedValue={addServerModalVisible ? "_add" : servers.selected ?? "_add"}
+            selectedValue={
+              addServerModalVisible ? "_add" : servers.selected ?? "_add"
+            }
             onChange={(itemValue) => {
               if (itemValue === null) return;
               if (itemValue === "_add") {
@@ -81,17 +83,20 @@ export default function App() {
             style={[{ flex: 1 }, style_fg, style_bg]}
             items={[
               ...Array.from(servers.servers)
-              .sort((a, b) => b[1].lastUsedAt - a[1].lastUsedAt)
-              .map(([k, v]) => ({
+                .sort((a, b) => b[1].lastUsedAt - a[1].lastUsedAt)
+                .map(([k, v]) => ({
                   value: k,
                   label: v.name,
                   imageUrl: v.iconUrl,
                 })),
-              {value: "_add", label: t("addServer"), imageUrl: ""}
-            ] }
-            />
+              { value: "_add", label: t("addServer"), imageUrl: "" },
+            ]}
+          />
           <ServerAddDialog
-            visible={(addServerModalVisible || servers.servers.size === 0) && !firstTick}
+            visible={
+              (addServerModalVisible || servers.servers.size === 0) &&
+              !firstTick
+            }
             cancellable={servers.servers.size > 0}
             onClose={async (v: string | null) => {
               if (v === null) {
@@ -170,7 +175,7 @@ export default function App() {
           />
         )}
         {servers.selected === null ? (
-          <Text style={{flex: 1}}>No servers</Text>
+          <Text style={{ flex: 1 }}>No servers</Text>
         ) : (
           <Web
             uri={`https://${servers.selected}${servers.path}`}
@@ -202,7 +207,8 @@ const ServerAddDialog: React.FC<{
 
   const sendAndClose = () => {
     setPending(true);
-    props.onClose(str)
+    props
+      .onClose(str)
       .then(() => {
         setStr("");
       })
@@ -227,7 +233,7 @@ const ServerAddDialog: React.FC<{
       {props.cancellable && (
         <Dialog.Button
           label="Cancel"
-          style={[pending && {opacity: 0.5}]}
+          style={[pending && { opacity: 0.5 }]}
           disabled={pending}
           onPress={() => {
             props.onClose(null);
@@ -236,7 +242,7 @@ const ServerAddDialog: React.FC<{
       )}
       <Dialog.Button
         label="OK"
-        style={[pending && {opacity: 0.5}]}
+        style={[pending && { opacity: 0.5 }]}
         disabled={pending}
         onPress={sendAndClose}
       />
