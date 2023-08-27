@@ -13,14 +13,17 @@ import RNBootSplash from "react-native-bootsplash";
 import Dialog from "react-native-dialog";
 import WebView from "react-native-webview";
 import ImagedPicker from "@/ImagedPicker";
-import ConfigModal from "@/components/configModal";
-import { normalizeServerURL } from "@/utils";
 import { setBackgroundColor } from "@/background";
+import ConfigModal from "@/components/configModal";
 import Web from "@/components/web";
 import { useTranslation } from "@/i18n";
+import messageHandler from "@/notifications";
 import * as ServerConfig from "@/serverConfig";
 import { MKTheme, ThemeProvider } from "@/theme";
+import { normalizeServerURL } from "@/utils";
+import { usePushKeys } from "@/webPushCrypto";
 import lightOrDarkColor from "@check-light-or-dark/color";
+import messaging from "@react-native-firebase/messaging";
 
 export default function App() {
   const { t } = useTranslation();
@@ -56,6 +59,14 @@ export default function App() {
   React.useEffect(() => {
     setFirstTick(false);
   }, []);
+
+  React.useEffect(() => {
+    const unsubscribe = messaging().onMessage(messageHandler);
+    return unsubscribe;
+  }, []);
+
+  // ensure push keys are generated
+  usePushKeys();
 
   return (
     <ThemeProvider value={theme}>
@@ -172,6 +183,9 @@ export default function App() {
                 setConfigModal(null);
               }
             }}
+            onRequestInject={(script) =>
+              webRef.current?.injectJavaScript(script)
+            }
           />
         )}
         {servers.selected === null ? (
