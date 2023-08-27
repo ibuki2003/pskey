@@ -2,7 +2,6 @@ import React from "react";
 import {
   Modal,
   Pressable,
-  ScrollView,
   StyleSheet,
   Text,
   TextInput,
@@ -44,39 +43,41 @@ const ConfigModal: React.FC<Props> = (props) => {
     <Modal animationType="none" transparent={true} visible={props.open}>
       <View style={styles.centeredView}>
         <View style={[styles.modalView, style_bg]}>
-          <Text style={[styles.modalTitle, style_fg]}>
-            {t("serverConfigFor", { serverName: props.oldConfig.name })}
-          </Text>
-          <Pressable
-            style={{ position: "absolute", right: 0, top: 0, paddingRight: 10 }}
-            onPress={() => props.onClose(false)}
-            role="button"
-          >
-            <Text style={[{ fontSize: 30 }, style_fg]} aria-label="close">
-              x
+          <View style={[styles.modalTitleView]}>
+            <Text style={[styles.modalTitle, style_fg]}>
+              {t("serverConfigFor", { serverName: props.oldConfig.name })}
             </Text>
-          </Pressable>
-          <ScrollView style={{ flex: 1 }}>
-            <Text style={[styles.heading, style_fg]}>{t("customScript")}</Text>
-            <TextInput
-              multiline={true}
-              value={script}
-              onChangeText={setScript}
-              style={[styles.codeEditor, style_fg]}
-            />
-          </ScrollView>
-          <Pressable
-            style={[styles.button, styles.buttonRemove]}
-            onPress={() => props.onClose(null)}
-          >
-            <Text style={[styles.textStyle]}>{t("deleteThisServer")}</Text>
-          </Pressable>
-          <Pressable
-            style={[styles.button, styles.buttonSave]}
-            onPress={saveAndClose}
-          >
-            <Text style={styles.textStyle}>{t("saveAndClose")}</Text>
-          </Pressable>
+            <Pressable onPress={() => props.onClose(false)} role="button">
+              <Text style={[{ fontSize: 20 }, style_fg]} aria-label="close">
+                X
+              </Text>
+            </Pressable>
+          </View>
+          <View style={styles.flexView}>
+            <View style={styles.flexView}>
+              <Text style={[styles.heading, style_fg]}>
+                {t("customScript")}
+              </Text>
+              <TextInput
+                multiline={true}
+                value={script}
+                onChangeText={setScript}
+                style={[styles.codeEditor, style_fg]}
+              />
+            </View>
+            <Pressable
+              style={[styles.button, styles.buttonRemove]}
+              onPress={() => props.onClose(null)}
+            >
+              <Text style={[styles.textStyle]}>{t("deleteThisServer")}</Text>
+            </Pressable>
+            <Pressable
+              style={[styles.button, styles.buttonSave]}
+              onPress={saveAndClose}
+            >
+              <Text style={styles.textStyle}>{t("saveAndClose")}</Text>
+            </Pressable>
+          </View>
         </View>
       </View>
     </Modal>
@@ -97,17 +98,28 @@ const styles = StyleSheet.create({
     margin: 10,
     borderRadius: 5,
     padding: 15,
-    alignItems: "stretch",
+    paddingTop: 5,
     elevation: 5,
+    alignItems: "stretch",
+  },
+
+  flexView: {
+    flex: 1,
+  },
+
+  modalTitleView: {
+    marginVertical: 5,
+    flexDirection: "row",
+    alignItems: "center",
+  },
+  modalTitle: {
+    fontSize: 20,
+    flex: 1,
+    textAlign: "center",
   },
 
   textStyle: {
     fontWeight: "bold",
-    textAlign: "center",
-  },
-  modalTitle: {
-    fontSize: 20,
-    marginBottom: 15,
     textAlign: "center",
   },
 
@@ -116,6 +128,7 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
   },
   codeEditor: {
+    flex: 1,
     height: 300,
     borderColor: "#888",
     borderWidth: 1,
