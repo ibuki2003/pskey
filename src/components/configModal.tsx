@@ -1,13 +1,16 @@
 import React from "react";
 import {
   Modal,
+  Platform,
   Pressable,
+  ScrollView,
   StyleSheet,
   Text,
   TextInput,
   View,
 } from "react-native";
 import { useTranslation } from "@/i18n";
+import { registerServiceWorker } from "@/notifications";
 import { ServerConfig } from "@/serverConfig";
 import { useTheme } from "@/theme";
 
@@ -17,6 +20,7 @@ interface Props {
 
   // null: delete, false: cancel
   onClose: (config: ServerConfig | null | false) => void;
+  onRequestInject: (script: string) => void;
 }
 
 const ConfigModal: React.FC<Props> = (props) => {
@@ -39,6 +43,8 @@ const ConfigModal: React.FC<Props> = (props) => {
     });
   };
 
+  const [scvHeight, setScvHeight] = React.useState(100);
+
   return (
     <Modal animationType="none" transparent={true} visible={props.open}>
       <View style={styles.centeredView}>
@@ -53,31 +59,70 @@ const ConfigModal: React.FC<Props> = (props) => {
               </Text>
             </Pressable>
           </View>
-          <View style={styles.flexView}>
-            <View style={styles.flexView}>
-              <Text style={[styles.heading, style_fg]}>
-                {t("customScript")}
-              </Text>
-              <TextInput
-                multiline={true}
-                value={script}
-                onChangeText={setScript}
-                style={[styles.codeEditor, style_fg]}
-              />
+          <ScrollView
+            style={styles.flexView}
+            overScrollMode="never"
+            onLayout={(e) => setScvHeight(e.nativeEvent.layout.height)}
+          >
+            <View style={{ height: scvHeight * 0.95 }}>
+              <View style={styles.flexView}>
+                <Text style={[styles.heading2Text, style_fg]}>
+                  {t("customScript")}
+                </Text>
+                <TextInput
+                  multiline={true}
+                  value={script}
+                  onChangeText={setScript}
+                  style={[styles.codeEditor, style_fg]}
+                />
+              </View>
+              <Pressable
+                style={[styles.button, styles.buttonRemove]}
+                onPress={() => props.onClose(null)}
+              >
+                <Text style={[styles.textStyle]}>{t("deleteThisServer")}</Text>
+              </Pressable>
+              <Pressable
+                style={[styles.button, styles.buttonSave]}
+                onPress={saveAndClose}
+              >
+                <Text style={styles.textStyle}>{t("saveAndClose")}</Text>
+              </Pressable>
             </View>
-            <Pressable
-              style={[styles.button, styles.buttonRemove]}
-              onPress={() => props.onClose(null)}
-            >
-              <Text style={[styles.textStyle]}>{t("deleteThisServer")}</Text>
-            </Pressable>
-            <Pressable
-              style={[styles.button, styles.buttonSave]}
-              onPress={saveAndClose}
-            >
-              <Text style={styles.textStyle}>{t("saveAndClose")}</Text>
-            </Pressable>
-          </View>
+            {/* experimental settings */}
+            <View style={{ height: scvHeight * 0.7 }}>
+              <Text style={[style_fg, styles.heading1Text]}>
+                {t("experimentalSettings")}
+              </Text>
+              <Text style={[style_fg, styles.heading2Text]}>
+                {t("pushNotifications")}
+              </Text>
+              {/* @ts-expect-error key Release does exist */}
+              {Platform.constants["Release"] < 8 ? (
+                <Text style={[style_fg, styles.noteText]}>
+                  {t("becauseOfVersion") + t("pushNotificationsUnsupported")}
+                </Text>
+              ) : (
+                <>
+                  <Text style={[style_fg, styles.noteText]}>
+                    {t("pushNotificationsAbout")}
+                  </Text>
+                  <Pressable
+                    style={[styles.button, styles.buttonSave]}
+                    onPress={() => {
+                      registerServiceWorker(props.oldConfig.domain)
+                        .then((s) => props.onRequestInject(s))
+                        .catch((e) => console.error(e));
+                    }}
+                  >
+                    <Text style={styles.textStyle}>
+                      {t("pushNotificationsEnable")}
+                    </Text>
+                  </Pressable>
+                </>
+              )}
+            </View>
+          </ScrollView>
         </View>
       </View>
     </Modal>
@@ -123,10 +168,6 @@ const styles = StyleSheet.create({
     textAlign: "center",
   },
 
-  heading: {
-    fontSize: 15,
-    fontWeight: "bold",
-  },
   codeEditor: {
     flex: 1,
     height: 300,
@@ -147,6 +188,18 @@ const styles = StyleSheet.create({
   },
   buttonSave: {
     backgroundColor: "#29f",
+  },
+
+  heading1Text: {
+    fontSize: 20,
+    fontWeight: "bold",
+  },
+  heading2Text: {
+    fontSize: 15,
+    fontWeight: "bold",
+  },
+  noteText: {
+    fontSize: 12,
   },
 });
 
