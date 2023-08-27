@@ -16,7 +16,8 @@ class MyAppPackage : ReactPackage {
   override fun createNativeModules(
     reactContext: ReactApplicationContext
   ) = listOf(
-    BackgroundColor(reactContext)
+    BackgroundColor(reactContext),
+    WebPushCrypto(reactContext),
   )
 
 }
