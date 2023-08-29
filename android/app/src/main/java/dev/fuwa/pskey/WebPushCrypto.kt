@@ -123,6 +123,8 @@ class WebPushCrypto(reactContext: ReactApplicationContext) : ReactContextBaseJav
       val pubKeyBytes = urlsafeDecoder.decode(pubKey)
       val authBytes = urlsafeDecoder.decode(auth)
       val decrypted = decryptHKDF(msgBytes, privKeyBytes, pubKeyBytes, authBytes)
+        .dropLastWhile { it in listOf(0x00.toByte(), 0x02.toByte()) }
+        .toByteArray()
       val decryptedString = String(decrypted, UTF8)
       println(decryptedString)
       promise.resolve(decryptedString)
