@@ -53,35 +53,35 @@ class WebPushCrypto(reactContext: ReactApplicationContext) : ReactContextBaseJav
   fun generateKeyPair(promise: Promise)  {
     if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) {
       promise.reject("ERR_VERSION", "Android version must be 26 or higher to use this feature")
-    } else {
-      try {
-        val keyPairGen = KeyPairGenerator.getInstance("EC")
-        keyPairGen.initialize(ECGenParameterSpec(ecStdName))
-        val key = keyPairGen.generateKeyPair()
+      return
+    }
+    try {
+      val keyPairGen = KeyPairGenerator.getInstance("EC")
+      keyPairGen.initialize(ECGenParameterSpec(ecStdName))
+      val key = keyPairGen.generateKeyPair()
 
-        val privKey = key.private as java.security.interfaces.ECPrivateKey
-        val privKeyBytes = bnToBytes(privKey.s)
-        val privKeyStr = Base64.getUrlEncoder()
-          .encodeToString(privKeyBytes)
-          .trimEnd('=')
+      val privKey = key.private as java.security.interfaces.ECPrivateKey
+      val privKeyBytes = bnToBytes(privKey.s)
+      val privKeyStr = Base64.getUrlEncoder()
+        .encodeToString(privKeyBytes)
+        .trimEnd('=')
 
 
-        val pubKey = key.public as java.security.interfaces.ECPublicKey
-        val pubKeyBytes = ByteArray(65)
-        pubKeyBytes[0] = 0x04.toByte()
-        bnToBytes(pubKey.w.affineX).copyInto(pubKeyBytes, 1)
-        bnToBytes(pubKey.w.affineY).copyInto(pubKeyBytes, 33)
-        val pubKeyStr = Base64.getUrlEncoder()
-          .encodeToString(pubKeyBytes)
-          .trimEnd('=')
+      val pubKey = key.public as java.security.interfaces.ECPublicKey
+      val pubKeyBytes = ByteArray(65)
+      pubKeyBytes[0] = 0x04.toByte()
+      bnToBytes(pubKey.w.affineX).copyInto(pubKeyBytes, 1)
+      bnToBytes(pubKey.w.affineY).copyInto(pubKeyBytes, 33)
+      val pubKeyStr = Base64.getUrlEncoder()
+        .encodeToString(pubKeyBytes)
+        .trimEnd('=')
 
-        val map: WritableMap = WritableNativeMap()
-        map.putString("privateKey", privKeyStr)
-        map.putString("publicKey", pubKeyStr)
-        promise.resolve(map)
-      } catch (e: Exception) {
-        promise.reject(e)
-      }
+      val map: WritableMap = WritableNativeMap()
+      map.putString("privateKey", privKeyStr)
+      map.putString("publicKey", pubKeyStr)
+      promise.resolve(map)
+    } catch (e: Exception) {
+      promise.reject(e)
     }
   }
 
@@ -89,18 +89,18 @@ class WebPushCrypto(reactContext: ReactApplicationContext) : ReactContextBaseJav
   fun generateAuthSecret(promise: Promise) {
     if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) {
       promise.reject("ERR_VERSION", "Android version must be 26 or higher to use this feature")
-    } else {
-      try {
-        val rd = SecureRandom()
-        val auth = ByteArray(16)
-        rd.nextBytes(auth)
-        val authStr = Base64.getUrlEncoder()
-          .encodeToString(auth)
-          .trimEnd('=')
-        promise.resolve(authStr)
-      } catch (e: Exception) {
-        promise.reject(e)
-      }
+      return
+    }
+    try {
+      val rd = SecureRandom()
+      val auth = ByteArray(16)
+      rd.nextBytes(auth)
+      val authStr = Base64.getUrlEncoder()
+        .encodeToString(auth)
+        .trimEnd('=')
+      promise.resolve(authStr)
+    } catch (e: Exception) {
+      promise.reject(e)
     }
   }
 
