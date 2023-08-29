@@ -18,6 +18,7 @@ class MyAppPackage : ReactPackage {
   ) = listOf(
     BackgroundColor(reactContext),
     WebPushCrypto(reactContext),
+    NativeNotifications(reactContext),
   )
 
 }
