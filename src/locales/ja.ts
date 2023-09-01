@@ -17,7 +17,6 @@ const ja = {
   serverConfigFor: "{{serverName}} の設定",
   wrongServerURL: "間違ったサーバーURLです。",
 
-  experimentalSettings: "実験的設定",
   pushNotifications: "プッシュ通知",
   becauseOfVersion: "端末のバージョンが古いため、",
   pushNotificationsUnsupported: "プッシュ通知は設定できません。",
@@ -42,6 +41,11 @@ const ja = {
     receiveFollowRequest: `{{userName}} からフォローリクエストが届きました`,
     pollEnded: "アンケートの結果が出ました",
     achievementEarned: "実績を解除しました",
+  },
+
+  settings: {
+    general: "一般",
+    experimental: "実験的設定",
   },
 } as const;
 

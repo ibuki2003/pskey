@@ -3,12 +3,12 @@ import {
   Modal,
   Platform,
   Pressable,
-  ScrollView,
   StyleSheet,
   Text,
   TextInput,
   View,
 } from "react-native";
+import { TabBar, TabView } from "react-native-tab-view";
 import { useTranslation } from "@/i18n";
 import { registerServiceWorker } from "@/notifications";
 import { ServerConfig } from "@/serverConfig";
@@ -43,7 +43,87 @@ const ConfigModal: React.FC<Props> = (props) => {
     });
   };
 
-  const [scvHeight, setScvHeight] = React.useState(100);
+  const customTabBar: typeof TabBar = React.useCallback(
+    (props) => (
+      <TabBar
+        {...props}
+        indicatorStyle={{
+          backgroundColor: theme.foreground,
+        }}
+        style={{
+          backgroundColor: "transparent",
+        }}
+        activeColor={theme.foreground}
+        inactiveColor={theme.foreground}
+      />
+    ),
+    [theme]
+  );
+
+  const [tnIndex, setTnIndex] = React.useState(0);
+  const tnTabs = React.useMemo(
+    () => [
+      { key: "main", title: t("settings.general") },
+      { key: "experimental", title: t("settings.experimental") },
+    ],
+    []
+  );
+
+  const mainTab = (
+    <View style={styles.flexView}>
+      <View style={styles.flexView}>
+        <Text style={[styles.headingText, style_fg]}>{t("customScript")}</Text>
+        <TextInput
+          multiline={true}
+          value={script}
+          onChangeText={setScript}
+          style={[styles.codeEditor, style_fg]}
+        />
+      </View>
+      <Pressable
+        style={[styles.button, styles.buttonRemove]}
+        onPress={() => props.onClose(null)}
+      >
+        <Text style={[styles.textStyle]}>{t("deleteThisServer")}</Text>
+      </Pressable>
+      <Pressable
+        style={[styles.button, styles.buttonSave]}
+        onPress={saveAndClose}
+      >
+        <Text style={styles.textStyle}>{t("saveAndClose")}</Text>
+      </Pressable>
+    </View>
+  );
+
+  const experimentalTab = (
+    <View style={styles.flexView}>
+      <Text style={[style_fg, styles.headingText]}>
+        {t("pushNotifications")}
+      </Text>
+      {/* @ts-expect-error key Release does exist */}
+      {Platform.constants["Release"] < 8 ? (
+        <Text style={[style_fg, styles.noteText]}>
+          {t("becauseOfVersion") + t("pushNotificationsUnsupported")}
+        </Text>
+      ) : (
+        <>
+          <Text style={[style_fg, styles.noteText]}>
+            {t("pushNotificationsAbout")}
+          </Text>
+          <Pressable
+            style={[styles.button, styles.buttonSave]}
+            onPress={() => {
+              registerServiceWorker(props.oldConfig.domain)
+                .then((s) => props.onRequestInject(s))
+                .catch((e) => console.error(e));
+            }}
+          >
+            <Text style={styles.textStyle}>{t("pushNotificationsEnable")}</Text>
+          </Pressable>
+        </>
+      )}
+    </View>
+  );
 
   return (
     <Modal animationType="none" transparent={true} visible={props.open}>
@@ -59,70 +139,23 @@ const ConfigModal: React.FC<Props> = (props) => {
               </Text>
             </Pressable>
           </View>
-          <ScrollView
+          <TabView
             style={styles.flexView}
-            overScrollMode="never"
-            onLayout={(e) => setScvHeight(e.nativeEvent.layout.height)}
-          >
-            <View style={{ height: scvHeight * 0.95 }}>
-              <View style={styles.flexView}>
-                <Text style={[styles.heading2Text, style_fg]}>
-                  {t("customScript")}
-                </Text>
-                <TextInput
-                  multiline={true}
-                  value={script}
-                  onChangeText={setScript}
-                  style={[styles.codeEditor, style_fg]}
-                />
-              </View>
-              <Pressable
-                style={[styles.button, styles.buttonRemove]}
-                onPress={() => props.onClose(null)}
-              >
-                <Text style={[styles.textStyle]}>{t("deleteThisServer")}</Text>
-              </Pressable>
-              <Pressable
-                style={[styles.button, styles.buttonSave]}
-                onPress={saveAndClose}
-              >
-                <Text style={styles.textStyle}>{t("saveAndClose")}</Text>
-              </Pressable>
-            </View>
-            {/* experimental settings */}
-            <View style={{ height: scvHeight * 0.7 }}>
-              <Text style={[style_fg, styles.heading1Text]}>
-                {t("experimentalSettings")}
-              </Text>
-              <Text style={[style_fg, styles.heading2Text]}>
-                {t("pushNotifications")}
-              </Text>
-              {/* @ts-expect-error key Release does exist */}
-              {Platform.constants["Release"] < 8 ? (
-                <Text style={[style_fg, styles.noteText]}>
-                  {t("becauseOfVersion") + t("pushNotificationsUnsupported")}
-                </Text>
-              ) : (
-                <>
-                  <Text style={[style_fg, styles.noteText]}>
-                    {t("pushNotificationsAbout")}
-                  </Text>
-                  <Pressable
-                    style={[styles.button, styles.buttonSave]}
-                    onPress={() => {
-                      registerServiceWorker(props.oldConfig.domain)
-                        .then((s) => props.onRequestInject(s))
-                        .catch((e) => console.error(e));
-                    }}
-                  >
-                    <Text style={styles.textStyle}>
-                      {t("pushNotificationsEnable")}
-                    </Text>
-                  </Pressable>
-                </>
-              )}
-            </View>
-          </ScrollView>
+            navigationState={{
+              index: tnIndex,
+              routes: tnTabs,
+            }}
+            renderTabBar={customTabBar}
+            onIndexChange={setTnIndex}
+            renderScene={({ route }) => {
+              switch (route.key) {
+                case "main":
+                  return mainTab;
+                case "experimental":
+                  return experimentalTab;
+              }
+            }}
+          />
         </View>
       </View>
     </Modal>
@@ -190,16 +223,13 @@ const styles = StyleSheet.create({
     backgroundColor: "#29f",
   },
 
-  heading1Text: {
-    fontSize: 20,
-    fontWeight: "bold",
-  },
-  heading2Text: {
+  headingText: {
     fontSize: 15,
     fontWeight: "bold",
   },
   noteText: {
     fontSize: 12,
+    lineHeight: 17,
   },
 });
 

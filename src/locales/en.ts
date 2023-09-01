@@ -19,7 +19,6 @@ const en: Locale = {
   serverConfigFor: "Configurations for {{serverName}}",
   wrongServerURL: "Wrong server URL.",
 
-  experimentalSettings: "experimental settings",
   pushNotifications: "Push Notifications",
   becauseOfVersion: "Because of your device's version,",
   pushNotificationsUnsupported: "push notifications are not supported.",
@@ -44,6 +43,11 @@ const en: Locale = {
     receiveFollowRequest: `{{userName}} sent you a follow request`,
     pollEnded: "The poll has ended",
     achievementEarned: "You earned an achievement",
+  },
+
+  settings: {
+    general: "General",
+    experimental: "Experimental",
   },
 };
 export default en;
