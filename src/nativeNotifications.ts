@@ -2,7 +2,7 @@ import { NativeModules } from "react-native";
 
 const { NativeNotifications } = NativeModules;
 
-interface NotificationOptions {
+export interface NotificationOptions {
   id: string;
   group: string;
   title?: string;

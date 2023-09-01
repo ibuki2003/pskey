@@ -32,5 +32,18 @@ const en: Locale = {
   loginRequired: "Login required.",
   errorOccured: "An error occured。",
   registrationSuccessful: "Registration successful",
+
+  notifications: {
+    unknown: "Unknown notification",
+    reply: `{{userName}} replied to you`,
+    renote: `{{userName}} renoted your note`,
+    quote: `{{userName}} quoted your note`,
+    mention: `{{userName}} mentioned you`,
+    follow: `{{userName}} followed you`,
+    followRequestAccepted: `{{userName}} accepted your follow request`,
+    receiveFollowRequest: `{{userName}} sent you a follow request`,
+    pollEnded: "The poll has ended",
+    achievementEarned: "You earned an achievement",
+  },
 };
 export default en;

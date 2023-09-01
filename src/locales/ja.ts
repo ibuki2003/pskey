@@ -30,6 +30,19 @@ const ja = {
   loginRequired: "ログインが必要です。",
   errorOccured: "処理中にエラーが発生しました",
   registrationSuccessful: "設定が完了しました",
+
+  notifications: {
+    unknown: "不明な通知",
+    reply: `{{userName}} からリプライされました`,
+    renote: `{{userName}} にRenoteされました`,
+    quote: `{{userName}} が引用しました`,
+    mention: `{{userName}} からメンションされました`,
+    follow: `{{userName}} にフォローされました`,
+    followRequestAccepted: `{{userName}} にフォローリクエストが承認されました`,
+    receiveFollowRequest: `{{userName}} からフォローリクエストが届きました`,
+    pollEnded: "アンケートの結果が出ました",
+    achievementEarned: "実績を解除しました",
+  },
 } as const;
 
 export default ja;

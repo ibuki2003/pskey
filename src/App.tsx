@@ -57,6 +57,12 @@ export default function App() {
 
   const [firstTick, setFirstTick] = React.useState(true);
   React.useEffect(() => {
+    // ensure FCM works
+    messaging()
+      .getToken()
+      .then((token) => {
+        console.log(token);
+      });
     setFirstTick(false);
   }, []);
 
@@ -66,7 +72,7 @@ export default function App() {
   }, []);
 
   // ensure push keys are generated
-  usePushKeys();
+  console.log(usePushKeys());
 
   return (
     <ThemeProvider value={theme}>
