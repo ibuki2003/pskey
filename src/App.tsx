@@ -52,7 +52,10 @@ export default function App() {
   const webRef = React.useRef<WebView>(null);
 
   React.useEffect(() => {
-    if (!servers.loading) RNBootSplash.hide();
+    if (!servers.loading) {
+      setFirstTick(false);
+      RNBootSplash.hide();
+    }
   }, [servers.loading]);
 
   const [firstTick, setFirstTick] = React.useState(true);
@@ -63,7 +66,6 @@ export default function App() {
       .then((token) => {
         console.log(token);
       });
-    setFirstTick(false);
   }, []);
 
   React.useEffect(() => {
