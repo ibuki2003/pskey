@@ -94,7 +94,7 @@ export function composeNotification(
   switch (notif.type) {
     case "reaction":
       return {
-        title: `${notif.reaction} ${notif.user.name}`,
+        title: `${notif.reaction} ${userName(notif.user)}`,
         body: notif.note.text ?? "",
         iconUrl: notif.user.avatarUrl,
         badgeUrl: emojiUrl(srcDomain, notif.reaction) ?? undefined,
