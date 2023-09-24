@@ -43,6 +43,7 @@ const en: Locale = {
     receiveFollowRequest: `{{userName}} sent you a follow request`,
     pollEnded: "The poll has ended",
     achievementEarned: "You earned an achievement",
+    newNoteByUser: "{{userName}} posted a note",
   },
 
   settings: {

@@ -4,7 +4,16 @@ import { entities } from "misskey-js";
 // to avoid type error; real notification may be different from document
 type RealNotification =
   | entities.Notification
+  // TODO: update misskey-js and remove these lines after the next release
+  // pollEnded notification will be added in the next release of misskey-js
   | { type: "pollEnded"; note: entities.Note }
+  // note notification will be added in the next release of misskey
+  | {
+      type: "note";
+      user: entities.User;
+      userId: entities.User["id"];
+      note: entities.Note;
+    }
   | { type: "achievementEarned"; achievement: string };
 
 export interface NotificationContent {
@@ -190,6 +199,14 @@ export function composeNotification(
         title: i18n.t("notifications.achievementEarned"),
         body: notif.achievement,
         badgeUrl: getMkStaticIcon(srcDomain, "medal"),
+      };
+
+    case "note":
+      return {
+        title: i18n.t("notifications.newNoteByUser", {
+          userName: notif.user.name ?? notif.user.username,
+        }),
+        body: notif.note.text ?? "",
       };
 
     default:

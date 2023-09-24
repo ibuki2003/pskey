@@ -41,6 +41,7 @@ const ja = {
     receiveFollowRequest: `{{userName}} からフォローリクエストが届きました`,
     pollEnded: "アンケートの結果が出ました",
     achievementEarned: "実績を解除しました",
+    newNoteByUser: "{{userName}} がノートしました",
   },
 
   settings: {
