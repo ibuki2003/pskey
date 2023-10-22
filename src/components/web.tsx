@@ -1,6 +1,6 @@
 import React from "react";
 import { useTranslation } from "react-i18next";
-import { BackHandler } from "react-native";
+import { BackHandler, Share } from "react-native";
 import Dialog from "react-native-dialog";
 import { WebView } from "react-native-webview";
 import { MKTheme } from "@/theme";
@@ -49,6 +49,13 @@ const BASE_SCRIPT = `
       window.dispatchEvent(new Event('MKReady'));
     }
   }, 10);
+
+  if (!navigator.share) {
+    navigator.share = (param) => {
+      window.ReactNativeWebView.postMessage(JSON.stringify({ type: 'share', value: param }));
+    };
+  };
+
 })();
 
 `
@@ -69,6 +76,14 @@ function useForwardedRef<T>(ref: React.ForwardedRef<T>) {
   }, [ref]);
 
   return innerRef;
+}
+
+interface WebShareAPIParam {
+  // ref https://developer.mozilla.org/en-US/docs/Web/API/Navigator/share
+  url?: string;
+  text?: string;
+  title?: string;
+  // files unhandled
 }
 
 const Web: React.ForwardRefRenderFunction<WebView, Props> = (
@@ -134,16 +149,35 @@ const Web: React.ForwardRefRenderFunction<WebView, Props> = (
         onMessage={(event) => {
           const { type, value } = JSON.parse(event.nativeEvent.data) as {
             type: string;
-            value: string;
+            value: unknown;
           };
           console.log({ type, value });
 
           if (type === "theme") {
-            const [fg, bg] = value.split(";");
+            const [fg, bg] = (value as string).split(";");
             onThemeChange({ foreground: fg, background: bg });
           } else if (type === "pressImage") {
             console.log("pressImage", value);
-            setDLTarget(value);
+            setDLTarget(value as string);
+          } else if (type === "share") {
+            console.log("share", value);
+            // share API workaround
+            // https://github.com/react-native-webview/react-native-webview/issues/1262#issuecomment-933315821
+            const param = value as WebShareAPIParam;
+            if (param.url == null && param.text == null) {
+              return;
+            }
+            Share.share(
+              {
+                title: param.title,
+                message: [param.text, param.url].filter(Boolean).join(" "), // join text and url if both exists
+                url: param.url,
+              },
+              {
+                dialogTitle: param.title,
+                subject: param.title,
+              }
+            ).catch((e) => console.error(e));
           } else {
             console.log("got unknown message type", type);
           }
