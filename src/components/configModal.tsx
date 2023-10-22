@@ -1,5 +1,7 @@
 import React from "react";
 import {
+  Image,
+  Linking,
   Modal,
   Platform,
   Pressable,
@@ -65,6 +67,7 @@ const ConfigModal: React.FC<Props> = (props) => {
     () => [
       { key: "main", title: t("settings.general") },
       { key: "experimental", title: t("settings.experimental") },
+      { key: "info", title: t("settings.info") },
     ],
     []
   );
@@ -125,6 +128,26 @@ const ConfigModal: React.FC<Props> = (props) => {
     </View>
   );
 
+  const infoTab = (
+    <View style={styles.flexView}>
+      <Image
+        source={{ uri: "splash_icon" }}
+        style={{ width: 100, height: 100 }}
+      />
+      <Text style={[style_fg, styles.headingText]}>PSkey v1.4.2</Text>
+      <Text style={[style_fg, styles.noteText]}>{t("aboutPSkey")}</Text>
+      <Pressable
+        onPress={() => {
+          Linking.openURL("https://github.com/ibuki2003/pskey/wiki");
+        }}
+      >
+        <Text style={[style_fg, styles.noteText, styles.linkText]}>
+          https://github.com/ibuki2003/pskey/wiki
+        </Text>
+      </Pressable>
+    </View>
+  );
+
   return (
     <Modal animationType="none" transparent={true} visible={props.open}>
       <View style={styles.centeredView}>
@@ -153,6 +176,8 @@ const ConfigModal: React.FC<Props> = (props) => {
                   return mainTab;
                 case "experimental":
                   return experimentalTab;
+                case "info":
+                  return infoTab;
               }
             }}
           />
@@ -230,6 +255,10 @@ const styles = StyleSheet.create({
   noteText: {
     fontSize: 12,
     lineHeight: 17,
+  },
+  linkText: {
+    color: "#29f",
+    textDecorationLine: "underline",
   },
 });
 

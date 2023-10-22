@@ -30,6 +30,9 @@ const ja = {
   errorOccured: "処理中にエラーが発生しました",
   registrationSuccessful: "設定が完了しました",
 
+  aboutPSkey:
+    "PSkeyはオープンソースソフトウェアです。サポート、ライセンス情報などはGitHubにて対応しています。",
+
   notifications: {
     unknown: "不明な通知",
     reply: `{{userName}} からリプライされました`,
@@ -47,6 +50,7 @@ const ja = {
   settings: {
     general: "一般",
     experimental: "実験的設定",
+    info: "アプリ情報",
   },
 } as const;
 

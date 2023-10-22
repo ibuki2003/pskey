@@ -32,6 +32,9 @@ const en: Locale = {
   errorOccured: "An error occured。",
   registrationSuccessful: "Registration successful",
 
+  aboutPSkey:
+    "PSkey is open source software. Support, license information, etc. are available on GitHub.",
+
   notifications: {
     unknown: "Unknown notification",
     reply: `{{userName}} replied to you`,
@@ -49,6 +52,7 @@ const en: Locale = {
   settings: {
     general: "General",
     experimental: "Experimental",
+    info: "About App",
   },
 };
 export default en;
