@@ -265,6 +265,7 @@ const ServerAddDialog: React.FC<{
         placeholder={"misskey.io"}
         onChangeText={setStr}
         onSubmitEditing={sendAndClose}
+        autoFocus={true}
         value={str}
       />
 
