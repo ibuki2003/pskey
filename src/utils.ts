@@ -2,8 +2,8 @@
 export function normalizeServerURL(url: string): string {
   url = url.trim();
 
-  const m = /^(https?:\/\/)?([^/]+)\/?$/i.exec(url);
+  const m = /^(?:https?:\/\/|(?:@?\w+)?@)?([\w\-_.]+)\/?$/i.exec(url);
 
-  if (m) return m[2];
+  if (m) return m[1];
   else throw new Error("Invalid server URL");
 }
