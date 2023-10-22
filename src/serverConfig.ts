@@ -1,5 +1,6 @@
 import React from "react";
 import "react-native-url-polyfill/auto";
+import { MKTheme } from "./theme";
 import storage from "@/storage";
 
 export interface ServerConfig {
@@ -10,6 +11,7 @@ export interface ServerConfig {
   lastUsedAt: number; // timestamp
 
   userScripts: string[];
+  themeCache?: MKTheme;
 }
 
 type MisskeyMeta = {

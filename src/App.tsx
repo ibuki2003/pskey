@@ -49,6 +49,14 @@ export default function App() {
 
   const servers = ServerConfig.useServers();
 
+  React.useEffect(() => {
+    if (servers.selected === null) return;
+    const server = servers.servers.get(servers.selected)!;
+    if (server.themeCache !== undefined) {
+      setTheme(server.themeCache);
+    }
+  }, [servers.selected, servers.servers]);
+
   const webRef = React.useRef<WebView>(null);
 
   React.useEffect(() => {
@@ -199,7 +207,19 @@ export default function App() {
             uri={`https://${servers.selected}${servers.path}`}
             key={servers.selected}
             style={styles.webview}
-            onThemeChange={(newTheme) => setTheme(newTheme)}
+            onThemeChange={(newTheme) => {
+              const oldConfig = servers.servers.get(servers.selected!)!;
+              if (
+                JSON.stringify(oldConfig.themeCache) !==
+                JSON.stringify(newTheme)
+              ) {
+                servers.update(servers.selected!, {
+                  ...servers.servers.get(servers.selected!)!,
+                  themeCache: newTheme,
+                });
+              }
+              setTheme(newTheme);
+            }}
             userScripts={servers.servers.get(servers.selected)!.userScripts}
             onOpenExternalURL={(url) => {
               if (!servers.openURL(url)) {
