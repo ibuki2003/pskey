@@ -2,7 +2,7 @@ import React from "react";
 import { useTranslation } from "react-i18next";
 import { BackHandler, Share } from "react-native";
 import Dialog from "react-native-dialog";
-import { WebView } from "react-native-webview";
+import { WebView, WebViewMessageEvent } from "react-native-webview";
 import { MKTheme } from "@/theme";
 
 interface WebProps {
@@ -120,6 +120,49 @@ const Web: React.ForwardRefRenderFunction<WebView, Props> = (
     };
   }, []);
 
+  const onMsg = React.useCallback(
+    (event: WebViewMessageEvent) => {
+      const { type, value } = JSON.parse(event.nativeEvent.data) as {
+        type: string;
+        value: unknown;
+      };
+      console.log({ type, value });
+
+      switch (type) {
+        case "theme":
+          const [fg, bg] = (value as string).split(";");
+          onThemeChange({ foreground: fg, background: bg });
+          break;
+        case "pressImage":
+          console.log("pressImage", value);
+          setDLTarget(value as string);
+          break;
+        case "share":
+          console.log("share", value);
+          // share API workaround
+          // https://github.com/react-native-webview/react-native-webview/issues/1262#issuecomment-933315821
+          const param = value as WebShareAPIParam;
+          if (param.url == null && param.text == null) return;
+
+          Share.share(
+            {
+              title: param.title,
+              message: [param.text, param.url].filter(Boolean).join(" "), // join text and url if both exists
+              url: param.url,
+            },
+            {
+              dialogTitle: param.title,
+              subject: param.title,
+            }
+          ).catch((e) => console.error(e));
+          break;
+        default:
+          console.log("got unknown message type", type);
+      }
+    },
+    [onThemeChange, setDLTarget]
+  );
+
   return (
     <>
       <WebView
@@ -146,42 +189,7 @@ const Web: React.ForwardRefRenderFunction<WebView, Props> = (
             : "") +
           "\n\n\ntrue\n"
         }
-        onMessage={(event) => {
-          const { type, value } = JSON.parse(event.nativeEvent.data) as {
-            type: string;
-            value: unknown;
-          };
-          console.log({ type, value });
-
-          if (type === "theme") {
-            const [fg, bg] = (value as string).split(";");
-            onThemeChange({ foreground: fg, background: bg });
-          } else if (type === "pressImage") {
-            console.log("pressImage", value);
-            setDLTarget(value as string);
-          } else if (type === "share") {
-            console.log("share", value);
-            // share API workaround
-            // https://github.com/react-native-webview/react-native-webview/issues/1262#issuecomment-933315821
-            const param = value as WebShareAPIParam;
-            if (param.url == null && param.text == null) {
-              return;
-            }
-            Share.share(
-              {
-                title: param.title,
-                message: [param.text, param.url].filter(Boolean).join(" "), // join text and url if both exists
-                url: param.url,
-              },
-              {
-                dialogTitle: param.title,
-                subject: param.title,
-              }
-            ).catch((e) => console.error(e));
-          } else {
-            console.log("got unknown message type", type);
-          }
-        }}
+        onMessage={onMsg}
       />
       <Dialog.Container visible={!!DLTarget}>
         <Dialog.Title>{t("download")}</Dialog.Title>
