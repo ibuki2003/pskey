@@ -52,13 +52,9 @@ export default function App() {
   const webRef = React.useRef<WebView>(null);
 
   React.useEffect(() => {
-    if (!servers.loading) {
-      setFirstTick(false);
-      RNBootSplash.hide();
-    }
+    if (!servers.loading) RNBootSplash.hide();
   }, [servers.loading]);
 
-  const [firstTick, setFirstTick] = React.useState(true);
   React.useEffect(() => {
     // ensure FCM works
     messaging()
@@ -113,8 +109,8 @@ export default function App() {
           />
           <ServerAddDialog
             visible={
-              (addServerModalVisible || servers.servers.size === 0) &&
-              !firstTick
+              addServerModalVisible ||
+              (servers.servers.size === 0 && !servers.loading)
             }
             cancellable={servers.servers.size > 0}
             onClose={async (v: string | null) => {
