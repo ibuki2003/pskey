@@ -14,7 +14,12 @@ interface WebProps {
 }
 type Props = WebProps & React.ComponentProps<typeof WebView>;
 
-const BASE_SCRIPT = `
+// just a simple minifier
+export function minifyScript(script: string) {
+  return script.replace(/\/\/.*$/gm, "").replace(/[ \t\r\n]+/gs, " ");
+}
+
+const BASE_SCRIPT = minifyScript(`
 (() => {
   if (!window.ReactNativeWebView) return;
 
@@ -58,10 +63,7 @@ const BASE_SCRIPT = `
 
 })();
 
-`
-  // simple "minifier"
-  .replace(/\/\/.*$/gm, "")
-  .replace(/[ \t\r\n]+/gs, " ");
+`);
 
 function useForwardedRef<T>(ref: React.ForwardedRef<T>) {
   const innerRef = React.useRef<T>(null);

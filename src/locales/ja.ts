@@ -26,6 +26,10 @@ const ja = {
     "また、通知を設定するためにMisskeyのログイン情報を用いた操作を行います。\n" +
     "下のボタンを押すと、「現在ログインしているユーザー」での通知設定が行われます。",
   pushNotificationsEnable: "プッシュ通知を設定する",
+  refreshEmojis: "絵文字を更新する",
+  refreshEmojisAbout:
+    "絵文字キャッシュを強制的に更新します。その後ページがリロードされます。",
+
   loginRequired: "ログインが必要です。",
   errorOccured: "処理中にエラーが発生しました",
   registrationSuccessful: "設定が完了しました",

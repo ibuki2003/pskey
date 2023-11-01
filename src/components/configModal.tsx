@@ -11,6 +11,7 @@ import {
   View,
 } from "react-native";
 import { TabBar, TabView } from "react-native-tab-view";
+import { minifyScript } from "./web";
 import { useTranslation } from "@/i18n";
 import { registerServiceWorker } from "@/notifications";
 import { ServerConfig } from "@/serverConfig";
@@ -24,6 +25,24 @@ interface Props {
   onClose: (config: ServerConfig | null | false) => void;
   onRequestInject: (script: string) => void;
 }
+
+// remove from DB, force revalidate api cache, and reload
+const EMOJI_REFRESH_SCRIPT = minifyScript(`
+(() => {
+  const req = fetch('/api/emojis?', { cache: 'no-cache' });
+  const db = window.indexedDB.open('keyval-store');
+  db.onsuccess = (e) => {
+    const trans = e.target.result.transaction('keyval', 'readwrite');
+    const store = trans.objectStore('keyval');
+    store.delete('emojis');
+    store.delete('lastEmojisFetchedAt');
+    trans.oncomplete = () => {
+      console.log('done');
+      req.then(() => location.reload());
+    }
+  };
+})();
+`);
 
 const ConfigModal: React.FC<Props> = (props) => {
   const { t } = useTranslation();
@@ -125,6 +144,15 @@ const ConfigModal: React.FC<Props> = (props) => {
           </Pressable>
         </>
       )}
+
+      <Text style={[style_fg, styles.headingText]}>{t("refreshEmojis")}</Text>
+      <Text style={[style_fg, styles.noteText]}>{t("refreshEmojisAbout")}</Text>
+      <Pressable
+        style={[styles.button, styles.buttonSave]}
+        onPress={() => props.onRequestInject(EMOJI_REFRESH_SCRIPT)}
+      >
+        <Text style={styles.textStyle}>{t("refreshEmojis")}</Text>
+      </Pressable>
     </View>
   );
 
@@ -249,6 +277,7 @@ const styles = StyleSheet.create({
   },
 
   headingText: {
+    marginTop: 5,
     fontSize: 15,
     fontWeight: "bold",
   },

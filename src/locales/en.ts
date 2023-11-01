@@ -28,6 +28,10 @@ const en: Locale = {
     "App will also use your Misskey login token to set up notifications." +
     'Press the button below to set up notifications with the "currently logged in user".',
   pushNotificationsEnable: "Set up push notifications",
+  refreshEmojis: "Refresh emojis",
+  refreshEmojisAbout:
+    "Force refresh emoji cache. The page will be reloaded after that.",
+
   loginRequired: "Login required.",
   errorOccured: "An error occured。",
   registrationSuccessful: "Registration successful",
