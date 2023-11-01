@@ -65,11 +65,7 @@ export default function App() {
 
   React.useEffect(() => {
     // ensure FCM works
-    messaging()
-      .getToken()
-      .then((token) => {
-        console.log(token);
-      });
+    messaging().getToken();
   }, []);
 
   React.useEffect(() => {
@@ -78,7 +74,7 @@ export default function App() {
   }, []);
 
   // ensure push keys are generated
-  console.log(usePushKeys());
+  usePushKeys();
 
   return (
     <ThemeProvider value={theme}>

@@ -101,7 +101,6 @@ const Web: React.ForwardRefRenderFunction<WebView, Props> = (
   const [DLTarget, setDLTarget] = React.useState<string | null>(null);
 
   const handleBack = React.useCallback(() => {
-    console.log("handleBack");
     try {
       const c = innerRef.current;
       if (c) {
@@ -128,7 +127,7 @@ const Web: React.ForwardRefRenderFunction<WebView, Props> = (
         type: string;
         value: unknown;
       };
-      console.log({ type, value });
+      // console.log({ type, value });
 
       switch (type) {
         case "theme":
@@ -136,11 +135,9 @@ const Web: React.ForwardRefRenderFunction<WebView, Props> = (
           onThemeChange({ foreground: fg, background: bg });
           break;
         case "pressImage":
-          console.log("pressImage", value);
           setDLTarget(value as string);
           break;
         case "share":
-          console.log("share", value);
           // share API workaround
           // https://github.com/react-native-webview/react-native-webview/issues/1262#issuecomment-933315821
           const param = value as WebShareAPIParam;

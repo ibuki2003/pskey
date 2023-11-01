@@ -116,8 +116,6 @@ export default async function messageHandler(
         keys.authSecret
       );
 
-      console.log("Notification From: " + src);
-      console.log("Decrypted message: " + raw_msg);
       const m = JSON.parse(raw_msg);
       const notif = composeNotification(src, m);
       if (notif === null) return; // do not show notification
