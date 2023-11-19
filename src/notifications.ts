@@ -9,38 +9,43 @@ import messaging, {
 
 const SERVICE_SERVER_URL = "https://pskey-push.fuwa.dev";
 
-const registerScriptTemplate = (
-  endpoint: string,
-  publickey: string,
-  auth: string
-) => `
+// load user tokens from localStorage and run script
+const embedTemplate = (content: string) => `
 (async () => {
   try {
     const account = JSON.parse(localStorage.getItem('account'));
     if (!account) {
       throw new Error('${i18n.t("loginRequired")}');
     }
-    const token = account['token'];
-    const res = await fetch('/api/sw/register', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        i: token,
-        endpoint: '${endpoint}',
-        publickey: '${publickey}',
-        auth: '${auth}',
-      }),
-    });
-    console.log(res);
-    alert('${i18n.t("registrationSuccessful")}');
+${content}
   } catch (e) {
     alert('${i18n.t("errorOccured")}\\n' + e);
   }
 })();
 `;
 
+const registerScriptTemplate = (
+  endpoint: string,
+  publickey: string,
+  auth: string
+) =>
+  embedTemplate(`
+const token = account['token'];
+const res = await fetch('/api/sw/register', {
+  method: 'POST',
+  headers: {
+    'Content-Type': 'application/json',
+  },
+  body: JSON.stringify({
+    i: token,
+    endpoint: ${JSON.stringify(endpoint)} + '/' + account['username'],
+    publickey: ${JSON.stringify(publickey)},
+    auth: ${JSON.stringify(auth)},
+  }),
+});
+console.log(res);
+alert('${i18n.t("registrationSuccessful")}');
+`);
 export async function registerServiceWorker(domain: string) {
   // ensure notification permission
   if (
@@ -100,7 +105,9 @@ export default async function messageHandler(
 
   if ("webpush_message" in data) {
     const msg = data.webpush_message;
-    const src = data.src_domain;
+    const name: string | null = data.name;
+    const domain = data.src_domain;
+    const src = name ? `@${name}@${domain}` : domain;
 
     const keys = await loadPushKeys();
     if (!keys) {
