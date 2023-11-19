@@ -86,8 +86,8 @@ android {
     applicationId "dev.fuwa.pskey"
     minSdkVersion rootProject.ext.minSdkVersion
     targetSdkVersion rootProject.ext.targetSdkVersion
-    versionCode 11
-    versionName "1.6.0"
+    versionCode 12
+    versionName "1.7.0"
   }
   signingConfigs {
     debug {
