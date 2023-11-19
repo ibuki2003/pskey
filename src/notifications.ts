@@ -46,6 +46,21 @@ const res = await fetch('/api/sw/register', {
 console.log(res);
 alert('${i18n.t("registrationSuccessful")}');
 `);
+
+const unregisterScriptTemplate = (endpoint: string) =>
+  embedTemplate(`
+const endpoint = ${JSON.stringify(endpoint)};
+await Promise.all([
+  endpoint,
+  \`\${endpoint}/\${account['username']}\`,
+].map((e) => fetch('/api/sw/unregister', {
+  method: 'POST',
+  headers: { 'Content-Type': 'application/json', },
+  body: JSON.stringify({ i: account['token'], endpoint: e, }),
+})));
+alert('${i18n.t("registrationSuccessful")}');
+`);
+
 export async function registerServiceWorker(domain: string) {
   // ensure notification permission
   if (
@@ -92,6 +107,46 @@ export async function registerServiceWorker(domain: string) {
   );
 
   return registerScript;
+}
+
+// remove only one registration from misskey server
+export async function unregisterServiceWorker(domain: string) {
+  const fcmToken = await messaging().getToken();
+
+  const reg_id: string = await fetch(SERVICE_SERVER_URL + "/register", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      token: fcmToken,
+      domain: domain,
+    }),
+  })
+    .then((res) => res.json())
+    .then((data) => data.id);
+
+  const unregisterScript = unregisterScriptTemplate(
+    SERVICE_SERVER_URL + "/push/" + reg_id
+  );
+
+  return unregisterScript;
+}
+
+// remove registration from fwd server; it will remove all registrations of the "server"
+export async function unregisterRegistration(domain: string) {
+  const fcmToken = await messaging().getToken();
+
+  await fetch(SERVICE_SERVER_URL + "/unregister", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      token: fcmToken,
+      domain: domain,
+    }),
+  });
 }
 
 export default async function messageHandler(

@@ -26,6 +26,14 @@ const ja = {
     "また、通知を設定するためにMisskeyのログイン情報を用いた操作を行います。\n" +
     "下のボタンを押すと、「現在ログインしているユーザー」での通知設定が行われます。",
   pushNotificationsEnable: "プッシュ通知を設定する",
+  pushNotificationsUnregisterAbout: "現在のユーザの通知設定を解除します。",
+  pushNotificationsUnregister: "プッシュ通知を解除する",
+  pushNotificationsDeleteAbout:
+    "このサーバーからの通知設定をすべて削除します。\n" +
+    "この操作はすべてのユーザーに影響します。\n" +
+    "サーバーを削除する前にこの操作を行うことをおすすめします。\n" +
+    "また、重複して通知が届く場合はこの操作を試してください。",
+  pushNotificationsDelete: "通知設定を削除する",
   refreshEmojis: "絵文字を更新する",
   refreshEmojisAbout:
     "絵文字キャッシュを強制的に更新します。その後ページがリロードされます。",

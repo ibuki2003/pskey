@@ -1,5 +1,6 @@
 import React from "react";
 import {
+  Alert,
   Image,
   Linking,
   Modal,
@@ -13,7 +14,11 @@ import {
 import { TabBar, TabView } from "react-native-tab-view";
 import { minifyScript } from "./web";
 import { useTranslation } from "@/i18n";
-import { registerServiceWorker } from "@/notifications";
+import {
+  registerServiceWorker,
+  unregisterRegistration,
+  unregisterServiceWorker,
+} from "@/notifications";
 import { ServerConfig } from "@/serverConfig";
 import { useTheme } from "@/theme";
 
@@ -137,10 +142,40 @@ const ConfigModal: React.FC<Props> = (props) => {
             onPress={() => {
               registerServiceWorker(props.oldConfig.domain)
                 .then((s) => props.onRequestInject(s))
-                .catch((e) => console.error(e));
+                .catch((e) => Alert.alert(t("errorOccured"), e.message));
             }}
           >
             <Text style={styles.textStyle}>{t("pushNotificationsEnable")}</Text>
+          </Pressable>
+
+          <Text style={[style_fg, styles.noteText]}>
+            {t("pushNotificationsUnregisterAbout")}
+          </Text>
+          <Pressable
+            style={[styles.button, styles.buttonRemove]}
+            onPress={() => {
+              unregisterServiceWorker(props.oldConfig.domain)
+                .then((s) => props.onRequestInject(s))
+                .catch((e) => Alert.alert(t("errorOccured"), e.message));
+            }}
+          >
+            <Text style={styles.textStyle}>
+              {t("pushNotificationsUnregister")}
+            </Text>
+          </Pressable>
+
+          <Text style={[style_fg, styles.noteText]}>
+            {t("pushNotificationsDeleteAbout")}
+          </Text>
+          <Pressable
+            style={[styles.button, styles.buttonRemove]}
+            onPress={() => {
+              unregisterRegistration(props.oldConfig.domain)
+                .then(() => Alert.alert(t("registrationSuccessful")))
+                .catch((e) => Alert.alert(t("errorOccured"), e.message));
+            }}
+          >
+            <Text style={styles.textStyle}>{t("pushNotificationsDelete")}</Text>
           </Pressable>
         </>
       )}

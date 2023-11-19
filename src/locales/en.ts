@@ -28,6 +28,15 @@ const en: Locale = {
     "App will also use your Misskey login token to set up notifications." +
     'Press the button below to set up notifications with the "currently logged in user".',
   pushNotificationsEnable: "Set up push notifications",
+  pushNotificationsUnregisterAbout:
+    "Unregister notification settings for the current user.",
+  pushNotificationsUnregister: "Unregister push notifications",
+  pushNotificationsDeleteAbout:
+    "Delete all notification settings from this server.\n" +
+    "This operation affects all users of this server.\n" +
+    "It is recommended to do this before deleting the server.\n" +
+    "Also, if you receive duplicate notifications, try this operation.",
+  pushNotificationsDelete: "Delete registration",
   refreshEmojis: "Refresh emojis",
   refreshEmojisAbout:
     "Force refresh emoji cache. The page will be reloaded after that.",
