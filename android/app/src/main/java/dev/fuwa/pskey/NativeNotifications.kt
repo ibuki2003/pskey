@@ -79,7 +79,7 @@ class NativeNotifications (reactContext: ReactApplicationContext) : ReactContext
     manager.notify(NOTIFY_TAG, parentId, parentBuilder.build())
     manager.notify(NOTIFY_TAG, id, builder.build())
 
-    builder.setSmallIcon(R.drawable.ic_dropdown)
+    builder.setSmallIcon(R.drawable.notification_icon)
 
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
       // small icon
