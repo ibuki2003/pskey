@@ -25,7 +25,7 @@ import { usePushKeys } from "@/webPushCrypto";
 import lightOrDarkColor from "@check-light-or-dark/color";
 import messaging from "@react-native-firebase/messaging";
 
-export default function App() {
+export default function App(): React.JSX.Element {
   const { t } = useTranslation();
 
   const [addServerModalVisible, setModalVisible] = React.useState(false);
