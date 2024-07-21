@@ -1,10 +1,14 @@
 package dev.fuwa.pskey
 
 import android.os.Bundle
+import android.app.Activity
+import android.content.Intent
 import com.facebook.react.ReactActivity
 import com.facebook.react.ReactActivityDelegate
 import com.facebook.react.defaults.DefaultNewArchitectureEntryPoint.fabricEnabled
 import com.facebook.react.defaults.DefaultReactActivityDelegate
+import com.facebook.react.modules.core.DeviceEventManagerModule
+import com.facebook.react.bridge.Arguments
 import com.zoontek.rnbootsplash.RNBootSplash;
 
 class MainActivity : ReactActivity() {
@@ -26,10 +30,42 @@ class MainActivity : ReactActivity() {
    * (aka React 18) with two boolean flags.
    */
   override fun createReactActivityDelegate(): ReactActivityDelegate {
-    return DefaultReactActivityDelegate(
-      this,
-      mainComponentName!!,  // If you opted-in for the New Architecture, we enable the Fabric Renderer.
-      fabricEnabled
-    )
+    return MainActivityDelegate(this, mainComponentName!!)
+  }
+
+  public class MainActivityDelegate(activity: ReactActivity, mainComponentName: String): ReactActivityDelegate(activity, mainComponentName) {
+      private var mInitialProps: Bundle? = null;
+
+      val activity = activity;
+
+      private fun sendEvent(intent: Intent?) {
+        var map = Arguments.createMap()
+        map.putMap("extras", intent?.extras?.let { Arguments.fromBundle(it) })
+
+        try {
+          getReactInstanceManager().currentReactContext
+            ?.getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter::class.java)
+            ?.emit("onIntent", map);
+        } catch (e: Exception) {
+        }
+      }
+
+      override protected fun onCreate(savedInstanceState: Bundle?) {
+        mInitialProps = activity.intent.extras?.let { Bundle().apply { putBundle("initial_extras", it) } };
+        super.onCreate(savedInstanceState);
+        sendEvent(activity.getIntent());
+        activity.intent.replaceExtras(Bundle());
+      }
+
+      override fun onNewIntent(intent: Intent?): Boolean {
+        sendEvent(intent)
+        val ret = super.onNewIntent(intent);
+        mInitialProps = intent?.extras?.let { Bundle().apply { putBundle("initial_extras", it) } };
+        activity.intent.replaceExtras(Bundle());
+        intent?.replaceExtras(Bundle());
+        return ret
+      }
+
+      override fun getLaunchOptions(): Bundle? = mInitialProps
   }
 }

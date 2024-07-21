@@ -9,6 +9,7 @@ export interface NotificationOptions {
   body?: string;
   subtitle?: string;
   when?: string; // decimal string of unix timestamp millis
+  server_domain?: string;
 
   badgeUrl?: string;
   iconUrl?: string;

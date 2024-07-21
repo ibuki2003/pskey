@@ -2,6 +2,7 @@ import React from "react";
 import {
   Alert,
   Linking,
+  NativeAppEventEmitter,
   Platform,
   SafeAreaView,
   StyleSheet,
@@ -25,7 +26,27 @@ import { usePushKeys } from "@/webPushCrypto";
 import lightOrDarkColor from "@check-light-or-dark/color";
 import messaging from "@react-native-firebase/messaging";
 
-export default function App(): React.JSX.Element {
+type IntentExtras = { [key: string]: string };
+interface IntentArgs {
+  extras: IntentExtras;
+}
+
+const getIntentURL = (e: IntentExtras) => {
+  if (!("type" in e)) return;
+  const t = e.type;
+
+  switch (t) {
+    case "NOTIFICATION_TAP": {
+      return (e.url ?? e.server_domain)
+        ? `https://${e.server_domain}/my/notifications`
+        : null;
+    }
+  }
+};
+
+export default function App(props: {
+  initial_extras: IntentExtras;
+}): React.JSX.Element {
   const { t } = useTranslation();
 
   const [addServerModalVisible, setModalVisible] = React.useState(false);
@@ -47,7 +68,20 @@ export default function App(): React.JSX.Element {
     return [{ color: theme.foreground }, { backgroundColor: theme.background }];
   }, [theme]);
 
+  const webRef = React.useRef<WebView>(null);
+
   const servers = ServerConfig.useServers();
+
+  // keep URL to jump to after loading
+  const [urlToGo, setUrlToGo] = React.useState<string | null>(null);
+
+  if (!servers.loading && urlToGo !== null) {
+    servers.openURL(urlToGo) ||
+      webRef.current?.injectJavaScript(
+        `window.location.href = ${JSON.stringify(urlToGo)}`
+      );
+    setUrlToGo(null);
+  }
 
   React.useEffect(() => {
     if (servers.selected === null) return;
@@ -56,8 +90,6 @@ export default function App(): React.JSX.Element {
       setTheme(server.themeCache);
     }
   }, [servers.selected, servers.servers]);
-
-  const webRef = React.useRef<WebView>(null);
 
   React.useEffect(() => {
     if (!servers.loading) RNBootSplash.hide();
@@ -71,6 +103,24 @@ export default function App(): React.JSX.Element {
   React.useEffect(() => {
     const unsubscribe = messaging().onMessage(messageHandler);
     return unsubscribe;
+  }, []);
+
+  // intent handler
+  React.useEffect(() => {
+    // first intent from props
+    if (props.initial_extras)
+      setUrlToGo((x) => getIntentURL(props.initial_extras) || x);
+
+    const listener = NativeAppEventEmitter.addListener(
+      "onIntent",
+      (e: IntentArgs) => {
+        if (e.extras) setUrlToGo((x) => getIntentURL(e.extras) || x);
+      }
+    );
+
+    return () => {
+      listener.remove();
+    };
   }, []);
 
   // ensure push keys are generated
@@ -89,10 +139,11 @@ export default function App(): React.JSX.Element {
         >
           <ImagedPicker
             selectedValue={
-              addServerModalVisible ? "_add" : servers.selected ?? "_add"
+              addServerModalVisible ? "_add" : (servers.selected ?? "_add")
             }
             onChange={(itemValue) => {
               if (itemValue === null) return;
+              if (itemValue === servers.selected) return;
               if (itemValue === "_add") {
                 setModalVisible(true);
               } else {

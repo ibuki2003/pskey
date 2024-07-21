@@ -182,7 +182,7 @@ export function composeNotification(
     case "app":
       return {
         title: notif.header ?? notif.body ?? "",
-        body: notif.header ? notif.body ?? "" : "",
+        body: notif.header ? (notif.body ?? "") : "",
         iconUrl: notif.icon ?? undefined,
       };
 

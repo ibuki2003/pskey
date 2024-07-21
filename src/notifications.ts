@@ -187,6 +187,7 @@ export default async function messageHandler(
         group: src,
         when: String(message.sentTime ?? Date.now()),
         subtitle: src,
+        server_domain: domain,
 
         ...notif,
       };

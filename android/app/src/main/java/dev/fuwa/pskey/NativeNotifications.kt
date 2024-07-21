@@ -3,7 +3,9 @@ package dev.fuwa.pskey
 import android.Manifest
 import android.app.NotificationChannel
 import android.app.NotificationManager
+import android.app.PendingIntent
 import android.content.pm.PackageManager
+import android.content.Intent
 import android.graphics.drawable.BitmapDrawable
 import android.os.Build
 import androidx.core.app.ActivityCompat
@@ -74,6 +76,18 @@ class NativeNotifications (reactContext: ReactApplicationContext) : ReactContext
       .setWhen(notification.getString("when")?.toLong() ?: System.currentTimeMillis())
       .setShowWhen(true)
       .setOnlyAlertOnce(true)
+      .setContentIntent(notification.getString("server_domain")?.let {
+          PendingIntent.getActivity(
+          this.reactApplicationContext,
+          0,
+          Intent(this.reactApplicationContext, MainActivity::class.java).also {
+            it.flags = Intent.FLAG_ACTIVITY_SINGLE_TOP;
+            it.putExtra("type", "NOTIFICATION_TAP");
+            it.putExtra("server_domain", it);
+          },
+          PendingIntent.FLAG_IMMUTABLE
+        )
+      });
 
     val manager = NotificationManagerCompat.from(this.reactApplicationContext)
     manager.notify(NOTIFY_TAG, parentId, parentBuilder.build())
