@@ -18,7 +18,7 @@ import { setBackgroundColor } from "@/background";
 import ConfigModal from "@/components/configModal";
 import Web from "@/components/web";
 import { useTranslation } from "@/i18n";
-import messageHandler from "@/notifications";
+import messageHandler, { unregisterRegistration } from "@/notifications";
 import * as ServerConfig from "@/serverConfig";
 import { MKTheme, ThemeProvider } from "@/theme";
 import { normalizeServerURL } from "@/utils";
@@ -231,6 +231,7 @@ export default function App(props: {
                       onPress: () => {
                         setConfigModal(null);
                         servers.remove(configModal);
+                        unregisterRegistration(configModal);
                       },
                       style: "destructive",
                     },
