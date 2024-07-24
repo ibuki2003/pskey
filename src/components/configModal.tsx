@@ -12,6 +12,7 @@ import {
   View,
 } from "react-native";
 import { TabBar, TabView } from "react-native-tab-view";
+import ScriptsEditor from "./scriptsEditor";
 import { WVRequester, minifyScript } from "./web";
 import { useTranslation } from "@/i18n";
 import {
@@ -19,6 +20,7 @@ import {
   unregisterRegistration,
   unregisterServiceWorker,
 } from "@/notifications";
+import { ScriptsList, parseScripts, serializeScripts } from "@/scriptsConfig";
 import { ServerConfig } from "@/serverConfig";
 import { useTheme } from "@/theme";
 
@@ -56,16 +58,36 @@ const ConfigModal: React.FC<Props> = (props) => {
     return [{ color: theme.foreground }, { backgroundColor: theme.background }];
   }, [theme]);
 
-  const [script, setScript] = React.useState("");
+  // editing props
+  const [scripts, setScripts] = React.useState<ScriptsList>([]);
+  const [stylesheets, setStylesheets] = React.useState<ScriptsList | null>(
+    null
+  );
 
   React.useEffect(() => {
-    setScript(props.oldConfig.userScripts[0].content);
+    setScripts(props.oldConfig.userScripts);
   }, [props.oldConfig]);
 
-  const saveAndClose = () => {
+  React.useEffect(() => {
+    setStylesheets(null);
+    if (props.open) {
+      props
+        .requester?.("localStorage.getItem('customCss') ?? ''")
+        .then((s) => {
+          setStylesheets(parseScripts(s));
+        })
+        .catch((e) => Alert.alert(t("errorOccured"), e.message));
+    }
+  }, [props.open]);
+
+  const saveAndClose = async () => {
+    if (stylesheets !== null)
+      await props.requester?.(
+        `localStorage.setItem('customCss', ${JSON.stringify(serializeScripts(stylesheets))})`
+      );
     props.onClose({
       ...props.oldConfig,
-      userScripts: [{ content: script, enabled: true }],
+      userScripts: scripts,
     });
   };
 
@@ -99,12 +121,19 @@ const ConfigModal: React.FC<Props> = (props) => {
   const mainTab = (
     <View style={styles.flexView}>
       <View style={styles.flexView}>
-        <Text style={[styles.headingText, style_fg]}>{t("customScript")}</Text>
-        <TextInput
-          multiline={true}
-          value={script}
-          onChangeText={setScript}
-          style={[styles.codeEditor, style_fg]}
+        <ScriptsEditor
+          title={t("customScripts")}
+          value={scripts}
+          updateValue={setScripts}
+          style_fg={style_fg}
+          style_bg={style_bg}
+        />
+        <ScriptsEditor
+          title={t("customCSS")}
+          value={stylesheets}
+          updateValue={setStylesheets}
+          style_fg={style_fg}
+          style_bg={style_bg}
         />
       </View>
       <Pressable
