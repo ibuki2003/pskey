@@ -107,7 +107,6 @@ const Web: React.FC<Props> = ({
   useEffect(() => {
     if (!requesterRef) return;
     requesterRef.current = (f: string) => {
-      console.log("requesting", f);
       return new Promise((res, rej) => {
         const key = Math.random().toString(36).slice(2);
         pendingRequests.current[key] = { res, rej };
@@ -188,7 +187,6 @@ const Web: React.FC<Props> = ({
           const val = typeof value === "string" ? value : JSON.stringify(value);
 
           if (pendingRequests.current[key]) {
-            console.log("resolving", key, val);
             pendingRequests.current[key].res(val);
             delete pendingRequests.current[key];
           }
@@ -198,7 +196,6 @@ const Web: React.FC<Props> = ({
           const key = rest.key as string;
           const val = value as string;
           if (pendingRequests.current[key]) {
-            console.log("resolvingE", key, val);
             pendingRequests.current[key].rej(val);
             delete pendingRequests.current[key];
           }
