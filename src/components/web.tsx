@@ -3,13 +3,14 @@ import { useTranslation } from "react-i18next";
 import { BackHandler, Share } from "react-native";
 import Dialog from "react-native-dialog";
 import { WebView, WebViewMessageEvent } from "react-native-webview";
+import { ScriptsList } from "@/scriptsConfig";
 import { MKTheme } from "@/theme";
 
 interface WebProps {
   uri: string;
   onThemeChange: (newTheme: MKTheme) => void;
   onOpenExternalURL?: (url: string) => void;
-  userScripts?: string[];
+  userScripts?: ScriptsList;
   innerKey?: string;
 }
 type Props = WebProps & React.ComponentProps<typeof WebView>;
@@ -183,9 +184,10 @@ const Web: React.ForwardRefRenderFunction<WebView, Props> = (
           BASE_SCRIPT +
           (userScripts?.length
             ? userScripts
+                .filter((s) => s.enabled)
                 .map(
                   (s) =>
-                    `try { eval( ${JSON.stringify(s)} ) } catch (e) { alert(e); }`
+                    `try { eval( ${JSON.stringify(s.content)} ) } catch (e) { alert(e); }`
                 )
                 .join("\n")
             : "") +

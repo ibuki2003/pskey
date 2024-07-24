@@ -59,13 +59,13 @@ const ConfigModal: React.FC<Props> = (props) => {
   const [script, setScript] = React.useState("");
 
   React.useEffect(() => {
-    setScript(props.oldConfig.userScripts[0]);
+    setScript(props.oldConfig.userScripts[0].content);
   }, [props.oldConfig]);
 
   const saveAndClose = () => {
     props.onClose({
       ...props.oldConfig,
-      userScripts: [script],
+      userScripts: [{ content: script, enabled: true }],
     });
   };
 

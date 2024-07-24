@@ -1,5 +1,6 @@
 import React from "react";
 import "react-native-url-polyfill/auto";
+import { ScriptsList } from "./scriptsConfig";
 import { MKTheme } from "./theme";
 import storage from "@/storage";
 
@@ -10,7 +11,7 @@ export interface ServerConfig {
   iconUrl: string;
   lastUsedAt: number; // timestamp
 
-  userScripts: string[];
+  userScripts: ScriptsList;
   themeCache?: MKTheme;
 }
 
@@ -21,12 +22,27 @@ type MisskeyMeta = {
 
 const SERVERS_KEY = "servers";
 
+// "migration"
 function fixServerConfig(serverConfig: Partial<ServerConfig>): ServerConfig {
+  // create new members
+
   serverConfig.lastUsedAt ??= Date.now();
 
   if (!("userScripts" in serverConfig)) {
     serverConfig.userScripts = [];
   }
+
+  // userScripts may be string[]
+  serverConfig.userScripts = serverConfig
+    .userScripts!.filter(Boolean)
+    .map((script) =>
+      typeof script === "string"
+        ? {
+            content: script,
+            enabled: true,
+          }
+        : script
+    );
 
   return serverConfig as ServerConfig;
 }
