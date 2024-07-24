@@ -66,7 +66,7 @@ const en: Locale = {
   },
 
   settings: {
-    general: "General",
+    customize: "Customize",
     experimental: "Experimental",
     info: "About App",
   },

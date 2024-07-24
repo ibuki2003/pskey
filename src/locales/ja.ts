@@ -63,7 +63,7 @@ const ja = {
   },
 
   settings: {
-    general: "一般",
+    customize: "カスタマイズ",
     experimental: "実験的設定",
     info: "アプリ情報",
   },

@@ -111,7 +111,7 @@ const ConfigModal: React.FC<Props> = (props) => {
   const [tnIndex, setTnIndex] = React.useState(0);
   const tnTabs = React.useMemo(
     () => [
-      { key: "main", title: t("settings.general") },
+      { key: "main", title: t("settings.customize") },
       { key: "experimental", title: t("settings.experimental") },
       { key: "info", title: t("settings.info") },
     ],
@@ -254,7 +254,7 @@ const ConfigModal: React.FC<Props> = (props) => {
             </Text>
             <Pressable onPress={() => props.onClose(false)} role="button">
               <Text style={[{ fontSize: 20 }, style_fg]} aria-label="close">
-                X
+                ×
               </Text>
             </Pressable>
           </View>
