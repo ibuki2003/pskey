@@ -47,7 +47,7 @@ const ScriptsEditor: React.FC<Props> = (props) => {
         onPress={() => setEditing({ idx: index, content: item.content })}
         style={[styles.listitem]}
       >
-        <Text style={[styles.listitem_label, props.style_fg]}>
+        <Text style={[styles.listitem_label, props.style_fg]} numberOfLines={1}>
           {item.content.split("\n", 1)[0]}
         </Text>
         <Switch
@@ -205,18 +205,15 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   listitem: {
-    flex: 1,
     flexDirection: "row",
     alignItems: "center",
     padding: 8,
-    // marginVertical: 8,
-    // marginHorizontal: 16,
     borderBottomColor: "#ccc",
     borderBottomWidth: 1,
   },
   listitem_label: {
+    flex: 1,
     flexGrow: 1,
-    // fontSize: 32,
   },
 
   codeEditor: {
