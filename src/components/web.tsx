@@ -183,10 +183,13 @@ const Web: React.ForwardRefRenderFunction<WebView, Props> = (
           BASE_SCRIPT +
           (userScripts?.length
             ? userScripts
-                .map((s) => "try {\n" + s + "} catch (e) {alert(e);}")
-                .join("\n\n\n")
+                .map(
+                  (s) =>
+                    `try { eval( ${JSON.stringify(s)} ) } catch (e) { alert(e); }`
+                )
+                .join("\n")
             : "") +
-          "\n\n\ntrue\n"
+          "\ntrue\n"
         }
         onMessage={onMsg}
       />
