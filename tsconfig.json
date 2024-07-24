@@ -3,10 +3,13 @@
   "compilerOptions": {
     "allowSyntheticDefaultImports": true,
     "esModuleInterop": true,
+    "moduleResolution": "node",
     "jsx": "react-native",
     "strict": true,
     "rootDir": "./src",
     "baseUrl": "./src",
+    "lib": ["es2021"],
+    "target": "esnext",
     "paths": {
       "@/*": ["*"]
     }
