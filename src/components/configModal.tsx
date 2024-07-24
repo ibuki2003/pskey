@@ -12,7 +12,7 @@ import {
   View,
 } from "react-native";
 import { TabBar, TabView } from "react-native-tab-view";
-import { minifyScript } from "./web";
+import { WVRequester, minifyScript } from "./web";
 import { useTranslation } from "@/i18n";
 import {
   registerServiceWorker,
@@ -28,7 +28,7 @@ interface Props {
 
   // null: delete, false: cancel
   onClose: (config: ServerConfig | null | false) => void;
-  onRequestInject: (script: string) => void;
+  requester: WVRequester | null;
 }
 
 // remove from DB, force revalidate api cache, and reload
@@ -141,7 +141,7 @@ const ConfigModal: React.FC<Props> = (props) => {
             style={[styles.button, styles.buttonSave]}
             onPress={() => {
               registerServiceWorker(props.oldConfig.domain)
-                .then((s) => props.onRequestInject(s))
+                .then((s) => props.requester?.(s))
                 .catch((e) => Alert.alert(t("errorOccured"), e.message));
             }}
           >
@@ -155,7 +155,7 @@ const ConfigModal: React.FC<Props> = (props) => {
             style={[styles.button, styles.buttonRemove]}
             onPress={() => {
               unregisterServiceWorker(props.oldConfig.domain)
-                .then((s) => props.onRequestInject(s))
+                .then((s) => props.requester?.(s))
                 .catch((e) => Alert.alert(t("errorOccured"), e.message));
             }}
           >
@@ -184,7 +184,11 @@ const ConfigModal: React.FC<Props> = (props) => {
       <Text style={[style_fg, styles.noteText]}>{t("refreshEmojisAbout")}</Text>
       <Pressable
         style={[styles.button, styles.buttonSave]}
-        onPress={() => props.onRequestInject(EMOJI_REFRESH_SCRIPT)}
+        onPress={() =>
+          props
+            .requester?.(EMOJI_REFRESH_SCRIPT)
+            .catch((e) => Alert.alert(t("errorOccured"), e.message))
+        }
       >
         <Text style={styles.textStyle}>{t("refreshEmojis")}</Text>
       </Pressable>

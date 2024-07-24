@@ -16,7 +16,7 @@ import WebView from "react-native-webview";
 import ImagedPicker from "@/ImagedPicker";
 import { setBackgroundColor } from "@/background";
 import ConfigModal from "@/components/configModal";
-import Web from "@/components/web";
+import Web, { WVRequester } from "@/components/web";
 import { useTranslation } from "@/i18n";
 import messageHandler, { unregisterRegistration } from "@/notifications";
 import * as ServerConfig from "@/serverConfig";
@@ -69,6 +69,7 @@ export default function App(props: {
   }, [theme]);
 
   const webRef = React.useRef<WebView>(null);
+  const requesterRef = React.useRef<WVRequester | null>(null);
 
   const servers = ServerConfig.useServers();
 
@@ -77,7 +78,7 @@ export default function App(props: {
 
   if (!servers.loading && urlToGo !== null) {
     servers.openURL(urlToGo) ||
-      webRef.current?.injectJavaScript(
+      requesterRef.current?.(
         `window.location.href = ${JSON.stringify(urlToGo)}`
       );
     setUrlToGo(null);
@@ -243,9 +244,7 @@ export default function App(props: {
                 setConfigModal(null);
               }
             }}
-            onRequestInject={(script) =>
-              webRef.current?.injectJavaScript(script)
-            }
+            requester={requesterRef.current}
           />
         )}
         {servers.selected === null ? (
@@ -254,7 +253,9 @@ export default function App(props: {
           <Web
             uri={`https://${servers.selected}${servers.path}`}
             key={servers.selected}
-            style={styles.webview}
+            innerProps={{
+              style: styles.webview,
+            }}
             onThemeChange={(newTheme) => {
               const oldConfig = servers.servers.get(servers.selected!)!;
               if (
@@ -274,7 +275,8 @@ export default function App(props: {
                 Linking.openURL(url);
               }
             }}
-            ref={webRef}
+            innerRef={webRef}
+            requesterRef={requesterRef}
           />
         )}
       </View>
