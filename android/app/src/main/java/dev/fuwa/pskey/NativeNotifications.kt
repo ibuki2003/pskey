@@ -76,18 +76,18 @@ class NativeNotifications (reactContext: ReactApplicationContext) : ReactContext
       .setWhen(notification.getString("when")?.toLong() ?: System.currentTimeMillis())
       .setShowWhen(true)
       .setOnlyAlertOnce(true)
-      .setContentIntent(notification.getString("server_domain")?.let {
+      .setContentIntent(notification.getString("server_domain")?.let { domain ->
           PendingIntent.getActivity(
-          this.reactApplicationContext,
-          0,
-          Intent(this.reactApplicationContext, MainActivity::class.java).also {
-            it.flags = Intent.FLAG_ACTIVITY_SINGLE_TOP;
-            it.putExtra("type", "NOTIFICATION_TAP");
-            it.putExtra("server_domain", it);
-          },
-          PendingIntent.FLAG_IMMUTABLE
-        )
-      });
+            this.reactApplicationContext,
+            0,
+            Intent(this.reactApplicationContext, MainActivity::class.java).also { intent->
+              intent.flags = Intent.FLAG_ACTIVITY_SINGLE_TOP;
+              intent.putExtra("type", "NOTIFICATION_TAP");
+              intent.putExtra("server_domain", domain);
+            },
+            PendingIntent.FLAG_IMMUTABLE
+          )
+        });
 
     val manager = NotificationManagerCompat.from(this.reactApplicationContext)
     manager.notify(NOTIFY_TAG, parentId, parentBuilder.build())
