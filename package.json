@@ -1,6 +1,6 @@
 {
   "name": "dev.fuwa.pskey",
-  "version": "1.8.1",
+  "version": "1.8.2",
   "scripts": {
     "android": "react-native run-android",
     "ios": "react-native run-ios",
