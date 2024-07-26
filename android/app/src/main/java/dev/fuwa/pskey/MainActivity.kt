@@ -39,8 +39,16 @@ class MainActivity : ReactActivity() {
       val activity = activity;
 
       private fun sendEvent(intent: Intent?) {
-        var map = Arguments.createMap()
-        map.putMap("extras", intent?.extras?.let { Arguments.fromBundle(it) })
+        var map = Arguments.createMap();
+
+        val intent_extras = intent?.extras;
+        if (intent_extras != null) {
+          val extras = Arguments.createMap()
+          for (key in intent_extras.keySet()) {
+            intent_extras.getString(key)?.let { extras.putString(key, it) };
+          }
+          map.putMap("extras", extras);
+        }
 
         try {
           getReactInstanceManager().currentReactContext
