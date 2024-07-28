@@ -38,17 +38,21 @@ class MainActivity : ReactActivity() {
 
       val activity = activity;
 
-      private fun sendEvent(intent: Intent?) {
+      companion object {
+        // extract only string values from bundle
+        private fun filterBundle(extras: Bundle): Bundle {
+          val out = Bundle();
+          for (key in extras.keySet()) {
+            extras.getString(key)?.let { out.putString(key, it) };
+          }
+          return out;
+        }
+      }
+
+      private fun sendEvent(extras: Bundle?) {
         var map = Arguments.createMap();
 
-        val intent_extras = intent?.extras;
-        if (intent_extras != null) {
-          val extras = Arguments.createMap()
-          for (key in intent_extras.keySet()) {
-            intent_extras.getString(key)?.let { extras.putString(key, it) };
-          }
-          map.putMap("extras", extras);
-        }
+        extras?.let { map.putMap("extras", Arguments.fromBundle(it)) };
 
         try {
           getReactInstanceManager().currentReactContext
@@ -59,16 +63,22 @@ class MainActivity : ReactActivity() {
       }
 
       override protected fun onCreate(savedInstanceState: Bundle?) {
-        mInitialProps = activity.intent.extras?.let { Bundle().apply { putBundle("initial_extras", it) } };
+        val extras = activity.intent.extras?.let { filterBundle(it) };
+        mInitialProps = extras?.let { Bundle().apply { putBundle("initial_extras", it) } };
         super.onCreate(savedInstanceState);
-        sendEvent(activity.getIntent());
+        sendEvent(extras);
+
+        // clear intent extras to prevent re-sending the same data
         activity.intent.replaceExtras(Bundle());
       }
 
       override fun onNewIntent(intent: Intent?): Boolean {
-        sendEvent(intent)
+        val extras = intent?.extras?.let { filterBundle(it) };
+        mInitialProps = extras?.let { Bundle().apply { putBundle("initial_extras", it) } };
         val ret = super.onNewIntent(intent);
-        mInitialProps = intent?.extras?.let { Bundle().apply { putBundle("initial_extras", it) } };
+        sendEvent(extras)
+
+        // clear intent extras to prevent re-sending the same data
         activity.intent.replaceExtras(Bundle());
         intent?.replaceExtras(Bundle());
         return ret
