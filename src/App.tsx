@@ -71,18 +71,12 @@ export default function App(props: {
   const webRef = React.useRef<WebView>(null);
   const requesterRef = React.useRef<WVRequester | null>(null);
 
-  const servers = ServerConfig.useServers();
-
-  // keep URL to jump to after loading
-  const [urlToGo, setUrlToGo] = React.useState<string | null>(null);
-
-  if (!servers.loading && urlToGo !== null) {
-    servers.openURL(urlToGo) ||
-      requesterRef.current?.(
-        `window.location.href = ${JSON.stringify(urlToGo)}`
-      );
-    setUrlToGo(null);
-  }
+  const servers = ServerConfig.useServers(() => {
+    if (props.initial_extras) {
+      return getIntentURL(props.initial_extras) ?? null;
+    }
+    return null;
+  });
 
   React.useEffect(() => {
     if (servers.selected === null) return;
@@ -109,13 +103,16 @@ export default function App(props: {
   // intent handler
   React.useEffect(() => {
     // first intent from props
-    if (props.initial_extras)
-      setUrlToGo((x) => getIntentURL(props.initial_extras) || x);
 
     const listener = NativeAppEventEmitter.addListener(
       "onIntent",
       (e: IntentArgs) => {
-        if (e.extras) setUrlToGo((x) => getIntentURL(e.extras) || x);
+        if (e.extras) {
+          const url = getIntentURL(e.extras);
+          if (url) {
+            webRef.current?.injectJavaScript(`location.href = "${url}"`);
+          }
+        }
       }
     );
 
@@ -271,7 +268,7 @@ export default function App(props: {
             }}
             userScripts={servers.servers.get(servers.selected)!.userScripts}
             onOpenExternalURL={(url) => {
-              if (!servers.openURL(url)) {
+              if (!servers.openExternal(url)) {
                 Linking.openURL(url);
               }
             }}

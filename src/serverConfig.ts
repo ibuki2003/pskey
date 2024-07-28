@@ -79,7 +79,7 @@ async function removeServer(domain: string) {
   await storage.remove({ key: SERVERS_KEY, id: domain });
 }
 
-export function useServers() {
+export function useServers(initialUrl: string | null | (() => string | null)) {
   const [servers] = React.useState(() => new Map<string, ServerConfig>());
   function lastServerId() {
     if (servers.size === 0) return null;
@@ -98,8 +98,16 @@ export function useServers() {
       // setServers(servers.map((server) => server.name));
       servers.clear();
       s.forEach((server) => servers.set(server.domain, server));
-      setSelectedServer(lastServerId());
-      setPath("/");
+
+      const u = typeof initialUrl === "function" ? initialUrl() : initialUrl;
+      if (u) {
+        const url = new URL(u);
+        setSelectedServer(url.hostname);
+        setPath(url.pathname);
+      } else {
+        setSelectedServer(lastServerId());
+        setPath("/");
+      }
 
       setLoading(false);
     });
@@ -139,14 +147,16 @@ export function useServers() {
 
   const select = React.useCallback(
     (domain: string) => {
+      if (!servers.has(domain)) return false;
       setSelectedServer(domain);
-      setPath("/");
       update(domain, { ...servers.get(domain)!, lastUsedAt: Date.now() });
+      return true;
     },
     [setSelectedServer, update]
   );
 
-  const openURL = (url: string) => {
+  // return false if hostname is not in servers or selected (for external links)
+  const openExternal = (url: string) => {
     const u = new URL(url);
     if (servers.has(u.hostname) && selected !== u.hostname) {
       select(u.hostname);
@@ -176,6 +186,6 @@ export function useServers() {
     remove,
     update,
     select,
-    openURL,
+    openExternal,
   };
 }
