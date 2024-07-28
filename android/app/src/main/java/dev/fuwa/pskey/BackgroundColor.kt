@@ -7,7 +7,8 @@ import com.facebook.react.bridge.Promise;
 import android.view.WindowManager;
 import androidx.core.view.WindowInsetsControllerCompat
 
-class BackgroundColor(reactContext: ReactApplicationContext) : ReactContextBaseJavaModule(reactContext) {
+class BackgroundColor(reactContext: ReactApplicationContext) :
+  ReactContextBaseJavaModule(reactContext) {
   override fun getName() = "BackgroundColor"
 
   @ReactMethod

@@ -19,10 +19,11 @@ import com.facebook.react.uimanager.events.EventDispatcher
 
 
 class ImagePickerManager(
-  private val reactContext: ReactApplicationContext
-): BaseViewManager<ImagedPicker, ImagePickerShadowNode>() {
+  private val reactContext: ReactApplicationContext,
+) : BaseViewManager<ImagedPicker, ImagePickerShadowNode>() {
 
   override fun getName() = REACT_CLASS
+
   /**
    * Return a FrameLayout which will later hold the Fragment
    */
@@ -32,13 +33,14 @@ class ImagePickerManager(
   override fun createShadowNodeInstance(): ImagePickerShadowNode {
     return ImagePickerShadowNode()
   }
+
   override fun getShadowNodeClass(): Class<out ImagePickerShadowNode>? {
     return ImagePickerShadowNode::class.java
   }
 
-  override fun updateExtraData(p0: ImagedPicker, p1: Any?) { }
+  override fun updateExtraData(p0: ImagedPicker, p1: Any?) {}
 
-  @ReactProp(name="items")
+  @ReactProp(name = "items")
   fun setItems(view: ImagedPicker, items: ReadableArray?) {
     if (items != null) {
       Log.i("pskey", items.toString())
@@ -53,7 +55,7 @@ class ImagePickerManager(
     }
   }
 
-  @ReactProp(name="selected")
+  @ReactProp(name = "selected")
   fun setSelected(view: ImagedPicker, selected: Int?) {
     if (selected != null) {
       view.setSelection = selected
@@ -89,7 +91,8 @@ class ImagePickerManager(
   }
 
   override fun getExportedCustomBubblingEventTypeConstants(): Map<String, Any>? {
-    return mapOf(PickerItemSelectEvent.EVENT_NAME to mapOf(
+    return mapOf(
+      PickerItemSelectEvent.EVENT_NAME to mapOf(
         "phasedRegistrationNames" to mapOf(
           "bubbled" to "onChange"
         )
@@ -102,15 +105,19 @@ class ImagePickerManager(
     private const val COMMAND_CREATE = 1
   }
 
-  class PickerEventEmitter(private val picker: ImagedPicker, private val dispatcher: EventDispatcher)
-    : AdapterView.OnItemSelectedListener {
+  class PickerEventEmitter(
+    private val picker: ImagedPicker,
+    private val dispatcher: EventDispatcher,
+  ) : AdapterView.OnItemSelectedListener {
 
     override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
-      dispatcher.dispatchEvent(PickerItemSelectEvent(
-        UIManagerHelper.getSurfaceId(picker),
-        picker.id,
-        position
-      ))
+      dispatcher.dispatchEvent(
+        PickerItemSelectEvent(
+          UIManagerHelper.getSurfaceId(picker),
+          picker.id,
+          position
+        )
+      )
     }
 
     override fun onNothingSelected(parent: AdapterView<*>?) {
@@ -149,7 +156,7 @@ class ReactPickerLocalData(val height: Int) {
   }
 }
 
-internal class PickerItemSelectEvent(surfaceId: Int, viewTag: Int, private val position: Int):
+internal class PickerItemSelectEvent(surfaceId: Int, viewTag: Int, private val position: Int) :
   Event<PickerItemSelectEvent>(surfaceId, viewTag) {
 
   override fun getEventData(): WritableMap? {

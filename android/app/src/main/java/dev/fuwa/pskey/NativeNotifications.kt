@@ -20,7 +20,8 @@ import com.facebook.react.bridge.ReactContextBaseJavaModule
 import com.facebook.react.bridge.ReactMethod
 import com.facebook.react.bridge.ReadableMap
 
-class NativeNotifications (reactContext: ReactApplicationContext) : ReactContextBaseJavaModule(reactContext) {
+class NativeNotifications(reactContext: ReactApplicationContext) :
+  ReactContextBaseJavaModule(reactContext) {
   companion object {
     const val CHANNEL_ID = "default"
     const val NOTIFY_TAG = "pskey.fuwa.dev"
@@ -44,7 +45,7 @@ class NativeNotifications (reactContext: ReactApplicationContext) : ReactContext
       !notification.hasKey("title") ||
       !notification.hasKey("body") ||
       !notification.hasKey("group")
-      ) {
+    ) {
       promise.reject("ERR_INVALID", "Invalid notification")
       return
     }
@@ -77,17 +78,17 @@ class NativeNotifications (reactContext: ReactApplicationContext) : ReactContext
       .setShowWhen(true)
       .setOnlyAlertOnce(true)
       .setContentIntent(notification.getString("server_domain")?.let { domain ->
-          PendingIntent.getActivity(
-            this.reactApplicationContext,
-            0,
-            Intent(this.reactApplicationContext, MainActivity::class.java).also { intent->
-              intent.flags = Intent.FLAG_ACTIVITY_SINGLE_TOP;
-              intent.putExtra("type", "NOTIFICATION_TAP");
-              intent.putExtra("server_domain", domain);
-            },
-            PendingIntent.FLAG_IMMUTABLE
-          )
-        });
+        PendingIntent.getActivity(
+          this.reactApplicationContext,
+          0,
+          Intent(this.reactApplicationContext, MainActivity::class.java).also { intent ->
+            intent.flags = Intent.FLAG_ACTIVITY_SINGLE_TOP;
+            intent.putExtra("type", "NOTIFICATION_TAP");
+            intent.putExtra("server_domain", domain);
+          },
+          PendingIntent.FLAG_IMMUTABLE
+        )
+      });
 
     val manager = NotificationManagerCompat.from(this.reactApplicationContext)
     manager.notify(NOTIFY_TAG, parentId, parentBuilder.build())

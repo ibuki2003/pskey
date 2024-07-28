@@ -12,7 +12,7 @@ import coil.load
 
 class ImagePickerAdapter(
   applicationContext: Context?,
-): BaseAdapter() {
+) : BaseAdapter() {
   private var context: Context? = applicationContext
   var items: List<ImagePickerItem> = listOf()
     set(value) {
@@ -36,11 +36,11 @@ class ImagePickerAdapter(
       notifyDataSetChanged()
     }
 
-  override fun getCount(): Int { return items.size }
+  override fun getCount(): Int = items.size;
 
-  override fun getItem(i: Int): Any? { return null }
+  override fun getItem(i: Int): Any? = null;
 
-  override fun getItemId(i: Int): Long { return 0 }
+  override fun getItemId(i: Int): Long = 0;
 
   override fun getView(i: Int, convertView: View?, parent: ViewGroup): View? {
     val view = convertView ?: inflater.inflate(R.layout.imaged_spinner_item, parent, false)

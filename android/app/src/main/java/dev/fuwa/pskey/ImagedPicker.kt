@@ -6,7 +6,7 @@ import com.facebook.react.bridge.ReactContext
 import com.facebook.react.uimanager.UIManagerHelper.getReactContext
 import com.facebook.react.uimanager.UIManagerModule
 
-class ImagedPicker(context: ReactContext): androidx.appcompat.widget.AppCompatSpinner(context) {
+class ImagedPicker(context: ReactContext) : androidx.appcompat.widget.AppCompatSpinner(context) {
   init {
     //Getting the instance of Spinner and applying OnItemSelectedListener on it
     val customAdapter = ImagePickerAdapter(context)

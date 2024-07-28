@@ -32,7 +32,8 @@ import javax.crypto.spec.GCMParameterSpec
 import javax.crypto.spec.SecretKeySpec
 
 
-class WebPushCrypto(reactContext: ReactApplicationContext) : ReactContextBaseJavaModule(reactContext) {
+class WebPushCrypto(reactContext: ReactApplicationContext) :
+  ReactContextBaseJavaModule(reactContext) {
   override fun getName(): String = "WebPushCrypto"
 
   private val UTF8: Charset = StandardCharsets.UTF_8 //$NON-NLS-1$
@@ -41,7 +42,9 @@ class WebPushCrypto(reactContext: ReactApplicationContext) : ReactContextBaseJav
   private fun bnToBytes(bn: BigInteger): ByteArray {
     val bytes = bn.toByteArray()
     if (bytes.size > 32) {
-      if (bytes.size > 33 || bytes[0] != 0x0.toByte()) { throw Error("bnToBytes: invalid bytes") }
+      if (bytes.size > 33 || bytes[0] != 0x0.toByte()) {
+        throw Error("bnToBytes: invalid bytes")
+      }
       return bytes.copyOfRange(1, bytes.size)
     }
     val out = ByteArray(32)
@@ -50,7 +53,7 @@ class WebPushCrypto(reactContext: ReactApplicationContext) : ReactContextBaseJav
   }
 
   @ReactMethod
-  fun generateKeyPair(promise: Promise)  {
+  fun generateKeyPair(promise: Promise) {
     if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) {
       promise.reject("ERR_VERSION", "Android version must be 26 or higher to use this feature")
       return
@@ -112,7 +115,7 @@ class WebPushCrypto(reactContext: ReactApplicationContext) : ReactContextBaseJav
     privKey: String,
     pubKey: String,
     auth: String,
-    promise: Promise
+    promise: Promise,
   ) {
     try {
       val decoder = Base64.getDecoder()
@@ -138,7 +141,7 @@ class WebPushCrypto(reactContext: ReactApplicationContext) : ReactContextBaseJav
     cipherData: ByteArray?,
     key: SecretKey,
     nonce: ByteArray?,
-    aad: ByteArray?
+    aad: ByteArray?,
   ): ByteArray {
     // Get Cipher Instance
     val cipher = Cipher.getInstance("AES/GCM/NoPadding")
@@ -200,7 +203,7 @@ class WebPushCrypto(reactContext: ReactApplicationContext) : ReactContextBaseJav
     buf: ByteArray?,
     privKey: ByteArray?,
     pubKey: ByteArray,
-    auth: ByteArray?
+    auth: ByteArray?,
   ): ByteArray {
     val kf = KeyFactory.getInstance("EC")
 

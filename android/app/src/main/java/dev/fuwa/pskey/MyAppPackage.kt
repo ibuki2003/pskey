@@ -8,13 +8,12 @@ import kotlin.collections.ArrayList
 
 class MyAppPackage : ReactPackage {
 
-  override fun createViewManagers(reactContext: ReactApplicationContext)
-    = listOf(
-      ImagePickerManager(reactContext)
-    )
+  override fun createViewManagers(reactContext: ReactApplicationContext) = listOf(
+    ImagePickerManager(reactContext)
+  )
 
   override fun createNativeModules(
-    reactContext: ReactApplicationContext
+    reactContext: ReactApplicationContext,
   ) = listOf(
     BackgroundColor(reactContext),
     WebPushCrypto(reactContext),
