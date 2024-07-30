@@ -45,7 +45,7 @@ const en: Locale = {
     "Force refresh emoji cache. The page will be reloaded after that.",
 
   loginRequired: "Login required.",
-  errorOccured: "An error occured。",
+  errorOccured: "An error occured.",
   registrationSuccessful: "Registration successful",
 
   aboutPSkey:
