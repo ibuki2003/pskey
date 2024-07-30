@@ -230,7 +230,7 @@ const ConfigModal: React.FC<Props> = (props) => {
         source={{ uri: "splash_icon" }}
         style={{ width: 100, height: 100 }}
       />
-      <Text style={[style_fg, styles.headingText]}>PSkey v1.8.3</Text>
+      <Text style={[style_fg, styles.headingText]}>PSkey v1.8.4</Text>
       <Text style={[style_fg, styles.noteText]}>{t("aboutPSkey")}</Text>
       <Pressable
         onPress={() => {
