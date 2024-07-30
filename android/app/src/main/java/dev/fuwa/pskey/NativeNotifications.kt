@@ -31,7 +31,9 @@ class NativeNotifications(reactContext: ReactApplicationContext) :
 
   @ReactMethod
   fun makeNotification(notification: ReadableMap, promise: Promise) {
-    if (ActivityCompat.checkSelfPermission(
+    if (
+      Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU &&
+      ActivityCompat.checkSelfPermission(
         this.reactApplicationContext,
         Manifest.permission.POST_NOTIFICATIONS
       ) != PackageManager.PERMISSION_GRANTED
@@ -123,5 +125,7 @@ class NativeNotifications(reactContext: ReactApplicationContext) :
           .let { Coil.imageLoader(this.reactApplicationContext).enqueue(it) }
       }
     }
+
+    promise.resolve(null)
   }
 }

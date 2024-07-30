@@ -1,4 +1,4 @@
-import { PermissionsAndroid } from "react-native";
+import { PermissionsAndroid, Platform } from "react-native";
 import { composeNotification } from "./misskeyNotifications";
 import i18n from "@/i18n";
 import { makeNotification } from "@/nativeNotifications";
@@ -62,8 +62,14 @@ alert('${i18n.t("registrationSuccessful")}');
 `);
 
 export async function registerServiceWorker(domain: string) {
+  if (Platform.OS !== "android") {
+    // only for android
+    throw new Error("Unsupported platform");
+  }
   // ensure notification permission
   if (
+    // PUSH_NOTIFICATIONS permission is required for android 13+
+    Platform.Version >= 33 &&
     (await PermissionsAndroid.request(
       "android.permission.POST_NOTIFICATIONS"
     )) !== "granted"
