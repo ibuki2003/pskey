@@ -23,10 +23,15 @@ export interface NotificationContent {
   iconUrl?: string;
 }
 
-type MkPushNotification = {
-  type: "notification";
-  body: RealNotification;
-};
+type MkPushNotification =
+  | {
+      type: "notification";
+      body: RealNotification;
+    }
+  | {
+      type: "unreadAntennaNote" | "readAllNotifications";
+      body: unknown;
+    };
 
 function isMkNotification(n: unknown): n is entities.Notification {
   if (typeof n !== "object" || n === null) return false;
@@ -43,7 +48,9 @@ function isMkPushNotification(n: unknown): n is MkPushNotification {
   return (
     "type" in n &&
     typeof n.type === "string" &&
-    n.type === "notification" &&
+    ["notification", "unreadAntennaNote", "readAllNotifications"].includes(
+      n.type
+    ) &&
     "body" in n &&
     isMkNotification(n.body)
   );
@@ -97,6 +104,8 @@ export function composeNotification(
       body: JSON.stringify(msg),
     };
 
+  // ignore not-notification data
+  // TODO: support unreadAntennaNote and readAllNotifications
   if (msg.type !== "notification") return null;
   const notif = msg.body;
 
