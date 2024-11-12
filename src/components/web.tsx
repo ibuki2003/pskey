@@ -32,20 +32,28 @@ const BASE_SCRIPT = minifyScript(`
 
   window.addEventListener('load', () => {
     let value = '#000;#fff';
-    const styleObserver = new MutationObserver((mutations) => {
-      const s = mutations[0].target.style;
-      const currentValue = s.getPropertyValue('--fg') + ';' + s.getPropertyValue('--bg');
+    const html = document.documentElement;
+    const updateTheme = () => {
+      const s = getComputedStyle(html);
+
+      const [fg, bg] = [['--MI_THEME-fg', '--fg', 'color'], ['--MI_THEME-bg', '--bg', 'background-color']]
+        .map(a => a.reduce((a,b) => a || s.getPropertyValue(b), void 0));
+      const currentValue = fg+';'+bg;
 
       if (currentValue !== value) {
         value = currentValue;
         window.ReactNativeWebView.postMessage(JSON.stringify({ type: 'theme', value }))
       }
+    };
+    const styleObserver = new MutationObserver(() => {
+      updateTheme();
+      setTimeout(updateTheme, 1000);
     });
-
-    styleObserver.observe(document.documentElement, {
+    styleObserver.observe(html, {
       attributes: true,
-      attributeFilter: ['style'],
+      attributeFilter: ['style', 'class'],
     });
+    html.addEventListener('transitionend', updateTheme);
 
     document.body.addEventListener('contextmenu', (e) => {
       const t = e.target;
