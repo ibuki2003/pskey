@@ -14,7 +14,15 @@ type RealNotification =
       userId: entities.User["id"];
       note: entities.Note;
     }
-  | { type: "achievementEarned"; achievement: string };
+  | { type: "achievementEarned"; achievement: string }
+  | {
+      type: "scheduledNotePosted";
+      note: entities.Note;
+    }
+  | {
+      type: "scheduledNoteError";
+      draft: { data: { text: string } };
+    };
 
 export interface NotificationContent {
   title: string;
@@ -216,6 +224,20 @@ export function composeNotification(
           userName: notif.user.name ?? notif.user.username,
         }),
         body: notif.note.text ?? "",
+      };
+
+    // NOTE: misskey.io specific?
+    case "scheduledNotePosted":
+      return {
+        title: i18n.t("notifications.scheduledNotePosted"),
+        body: notif.note?.text ?? "",
+        // use badge data from original misskey, not misskey.io
+        badgeUrl: getMkStaticIcon(srcDomain, "circle-check"),
+      };
+    case "scheduledNoteError":
+      return {
+        title: i18n.t("notifications.scheduledNoteError"),
+        body: notif.draft?.data?.text ?? "",
       };
 
     default:

@@ -63,6 +63,8 @@ const en: Locale = {
     pollEnded: "The poll has ended",
     achievementEarned: "You earned an achievement",
     newNoteByUser: "{{userName}} posted a note",
+    scheduledNotePosted: "Scheduled note posted",
+    scheduledNoteError: "Failed to post scheduled note",
   },
 
   settings: {

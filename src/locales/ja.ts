@@ -60,6 +60,8 @@ const ja = {
     pollEnded: "アンケートの結果が出ました",
     achievementEarned: "実績を解除しました",
     newNoteByUser: "{{userName}} がノートしました",
+    scheduledNotePosted: "予約したノートが投稿されました",
+    scheduledNoteError: "予約したノートの投稿に失敗しました",
   },
 
   settings: {
