@@ -19,11 +19,7 @@ class ImagePickerAdapter(
       field = value
       notifyDataSetChanged()
     }
-  private var inflater: LayoutInflater
-
-  init {
-    inflater = LayoutInflater.from(applicationContext)
-  }
+  private var inflater: LayoutInflater = LayoutInflater.from(applicationContext)
 
   var color: Int? = null
     set(value) {
@@ -36,11 +32,11 @@ class ImagePickerAdapter(
       notifyDataSetChanged()
     }
 
-  override fun getCount(): Int = items.size;
+  override fun getCount(): Int = items.size
 
-  override fun getItem(i: Int): Any? = null;
+  override fun getItem(i: Int): Any? = null
 
-  override fun getItemId(i: Int): Long = 0;
+  override fun getItemId(i: Int): Long = 0
 
   override fun getView(i: Int, convertView: View?, parent: ViewGroup): View? {
     val view = convertView ?: inflater.inflate(R.layout.imaged_spinner_item, parent, false)
@@ -55,6 +51,6 @@ class ImagePickerAdapter(
 }
 
 class ImagePickerItem(
-  public final val text: String,
-  public final val imageUrl: String,
+  val text: String,
+  val imageUrl: String,
 )

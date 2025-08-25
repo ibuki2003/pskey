@@ -1,13 +1,12 @@
 package dev.fuwa.pskey
 
 import android.os.Build
-import android.util.Log
 import androidx.annotation.RequiresApi
+import com.facebook.imagepipeline.memory.BasePool.InvalidValueException
 import com.facebook.react.bridge.Promise
 import com.facebook.react.bridge.ReactApplicationContext
 import com.facebook.react.bridge.ReactContextBaseJavaModule
 import com.facebook.react.bridge.ReactMethod
-import com.facebook.react.bridge.ReadableMap
 import com.facebook.react.bridge.WritableMap
 import com.facebook.react.bridge.WritableNativeMap
 import java.math.BigInteger
@@ -205,6 +204,8 @@ class WebPushCrypto(reactContext: ReactApplicationContext) :
     pubKey: ByteArray,
     auth: ByteArray?,
   ): ByteArray {
+    buf ?: throw InvalidValueException("buf must not be null")
+
     val kf = KeyFactory.getInstance("EC")
 
     val gps = ECGenParameterSpec(ecStdName) // NIST P-256

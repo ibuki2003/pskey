@@ -4,7 +4,7 @@ import {
   Linking,
   NativeAppEventEmitter,
   Platform,
-  SafeAreaView,
+  StatusBar,
   StyleSheet,
   Text,
   View,
@@ -12,6 +12,7 @@ import {
 import { Pressable } from "react-native";
 import RNBootSplash from "react-native-bootsplash";
 import Dialog from "react-native-dialog";
+import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
 import WebView from "react-native-webview";
 import ImagedPicker from "@/ImagedPicker";
 import { setBackgroundColor } from "@/background";
@@ -24,7 +25,11 @@ import { MKTheme, ThemeProvider } from "@/theme";
 import { normalizeServerURL } from "@/utils";
 import { usePushKeys } from "@/webPushCrypto";
 import lightOrDarkColor from "@check-light-or-dark/color";
-import messaging from "@react-native-firebase/messaging";
+import {
+  getMessaging,
+  getToken,
+  onMessage,
+} from "@react-native-firebase/messaging";
 
 type IntentExtras = { [key: string]: string };
 interface IntentArgs {
@@ -47,6 +52,16 @@ const getIntentURL = (e: IntentExtras) => {
 export default function App(props: {
   initial_extras: IntentExtras;
 }): React.JSX.Element {
+  return (
+    <SafeAreaProvider>
+      <AppContent initial_extras={props.initial_extras} />
+    </SafeAreaProvider>
+  );
+}
+
+function AppContent(props: {
+  initial_extras: IntentExtras;
+}): React.JSX.Element {
   const { t } = useTranslation();
 
   const [addServerModalVisible, setModalVisible] = React.useState(false);
@@ -58,9 +73,11 @@ export default function App(props: {
     foreground: "#000",
   });
 
+  const isLight = lightOrDarkColor(theme.background) === "light";
+
   React.useEffect(() => {
     if (Platform.OS === "android") {
-      const isLight = lightOrDarkColor(theme.background) === "light";
+      // const isLight = lightOrDarkColor(theme.background) === "light";
       setBackgroundColor(theme.background, isLight);
     }
   }, [theme.background]);
@@ -92,11 +109,14 @@ export default function App(props: {
 
   React.useEffect(() => {
     // ensure FCM works
-    messaging().getToken();
+    // messaging().getToken();
+    const messaging = getMessaging();
+    getToken(messaging);
   }, []);
 
   React.useEffect(() => {
-    const unsubscribe = messaging().onMessage(messageHandler);
+    const messaging = getMessaging();
+    const unsubscribe = onMessage(messaging, messageHandler);
     return unsubscribe;
   }, []);
 
@@ -126,8 +146,17 @@ export default function App(props: {
 
   return (
     <ThemeProvider value={theme}>
-      <View style={[styles.container, style_bg]}>
-        <SafeAreaView />
+      <StatusBar barStyle={isLight ? "dark-content" : "light-content"} />
+      <SafeAreaView
+        style={[
+          styles.container,
+          style_bg,
+          {
+            // paddingTop: Platform.OS === "android" ? StatusBar.currentHeight : 0,
+          },
+        ]}
+      >
+        {/* top bar */}
         <View
           style={{
             flexDirection: "row",
@@ -148,7 +177,14 @@ export default function App(props: {
                 servers.select(itemValue);
               }
             }}
-            style={[{ flex: 1 }, style_fg, style_bg]}
+            style={[
+              {
+                flex: 1,
+                height: "100%",
+              },
+              style_fg,
+              style_bg,
+            ]}
             items={[
               ...Array.from(servers.servers)
                 .sort((a, b) => b[1].lastUsedAt - a[1].lastUsedAt)
@@ -266,7 +302,9 @@ export default function App(props: {
               }
               setTheme(newTheme);
             }}
-            userScripts={servers.servers.get(servers.selected)!.userScripts}
+            userScripts={
+              servers.servers.get(servers.selected)?.userScripts ?? []
+            }
             onOpenExternalURL={(url) => {
               if (!servers.openExternal(url)) {
                 Linking.openURL(url);
@@ -276,7 +314,7 @@ export default function App(props: {
             requesterRef={requesterRef}
           />
         )}
-      </View>
+      </SafeAreaView>
     </ThemeProvider>
   );
 }

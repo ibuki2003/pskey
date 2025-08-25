@@ -84,13 +84,13 @@ class NativeNotifications(reactContext: ReactApplicationContext) :
           this.reactApplicationContext,
           0,
           Intent(this.reactApplicationContext, MainActivity::class.java).also { intent ->
-            intent.flags = Intent.FLAG_ACTIVITY_SINGLE_TOP;
-            intent.putExtra("type", "NOTIFICATION_TAP");
-            intent.putExtra("server_domain", domain);
+            intent.flags = Intent.FLAG_ACTIVITY_SINGLE_TOP
+            intent.putExtra("type", "NOTIFICATION_TAP")
+            intent.putExtra("server_domain", domain)
           },
           PendingIntent.FLAG_IMMUTABLE
         )
-      });
+      })
 
     val manager = NotificationManagerCompat.from(this.reactApplicationContext)
     manager.notify(NOTIFY_TAG, parentId, parentBuilder.build())
@@ -98,7 +98,6 @@ class NativeNotifications(reactContext: ReactApplicationContext) :
 
     builder.setSmallIcon(R.drawable.notification_icon)
 
-    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
       // small icon
       if (notification.hasKey("badgeUrl")) {
         ImageRequest.Builder(this.reactApplicationContext)
@@ -110,7 +109,6 @@ class NativeNotifications(reactContext: ReactApplicationContext) :
           }
           .build()
           .let { Coil.imageLoader(this.reactApplicationContext).enqueue(it) }
-      }
 
       // large icon
       if (notification.hasKey("iconUrl")) {

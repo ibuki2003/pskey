@@ -145,9 +145,12 @@ const Web: React.FC<Props> = ({
   }, [innerRef?.current]);
 
   React.useEffect(() => {
-    BackHandler.addEventListener("hardwareBackPress", handleBack);
+    const handler = BackHandler.addEventListener(
+      "hardwareBackPress",
+      handleBack
+    );
     return () => {
-      BackHandler.removeEventListener("hardwareBackPress", handleBack);
+      handler.remove();
     };
   }, []);
 

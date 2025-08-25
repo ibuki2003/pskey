@@ -34,7 +34,7 @@ class ImagePickerManager(
     return ImagePickerShadowNode()
   }
 
-  override fun getShadowNodeClass(): Class<out ImagePickerShadowNode>? {
+  override fun getShadowNodeClass(): Class<out ImagePickerShadowNode> {
     return ImagePickerShadowNode::class.java
   }
 
@@ -48,8 +48,8 @@ class ImagePickerManager(
         List(items.size()) { i ->
           val v = items.getMap(i)
           ImagePickerItem(
-            v.getString("label") ?: "",
-            v.getString("imageUrl") ?: "",
+            v?.getString("label") ?: "",
+            v?.getString("imageUrl") ?: "",
           )
         }
     }
@@ -90,7 +90,7 @@ class ImagePickerManager(
     }
   }
 
-  override fun getExportedCustomBubblingEventTypeConstants(): Map<String, Any>? {
+  override fun getExportedCustomBubblingEventTypeConstants(): Map<String, Any> {
     return mapOf(
       PickerItemSelectEvent.EVENT_NAME to mapOf(
         "phasedRegistrationNames" to mapOf(
@@ -102,7 +102,7 @@ class ImagePickerManager(
 
   companion object {
     private const val REACT_CLASS = "ImagedPicker"
-    private const val COMMAND_CREATE = 1
+    // private const val COMMAND_CREATE = 1
   }
 
   class PickerEventEmitter(
@@ -138,10 +138,10 @@ class ImagePickerShadowNode : LayoutShadowNode() {
 }
 
 class ReactPickerLocalData(val height: Int) {
-  override fun equals(o: Any?): Boolean {
-    if (this === o) return true
-    if (o == null || javaClass != o.javaClass) return false
-    val that = o as ReactPickerLocalData
+  override fun equals(other: Any?): Boolean {
+    if (this === other) return true
+    if (other == null || javaClass != other.javaClass) return false
+    val that = other as ReactPickerLocalData
     return height == that.height
   }
 
@@ -159,7 +159,7 @@ class ReactPickerLocalData(val height: Int) {
 internal class PickerItemSelectEvent(surfaceId: Int, viewTag: Int, private val position: Int) :
   Event<PickerItemSelectEvent>(surfaceId, viewTag) {
 
-  override fun getEventData(): WritableMap? {
+  override fun getEventData(): WritableMap {
     val eventData = Arguments.createMap()
     eventData.putInt("position", position)
     return eventData

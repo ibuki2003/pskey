@@ -5,6 +5,8 @@ import { makeNotification } from "@/nativeNotifications";
 import { decryptMessage, loadPushKeys } from "@/webPushCrypto";
 import messaging, {
   FirebaseMessagingTypes,
+  getMessaging,
+  getToken,
 } from "@react-native-firebase/messaging";
 
 const SERVICE_SERVER_URL = "https://pskey-push.fuwa.dev";
@@ -80,7 +82,8 @@ export async function registerServiceWorker(domain: string) {
   const keys = await loadPushKeys();
   if (!keys) throw new Error("No keys found");
 
-  const fcmToken = await messaging().getToken();
+  const messaging = getMessaging();
+  const fcmToken = await getToken(messaging);
 
   const vapid: string = await fetch("https://" + domain + "/api/meta", {
     method: "POST",
