@@ -51,6 +51,8 @@ const en: Locale = {
 
   aboutPSkey:
     "PSkey is open source software. Support, license information, etc. are available on GitHub.",
+  contactToDeveloper:
+    "For bug reports, requests, inquiries regarding CSAE, and other matters, please send a message to the developer.",
 
   notifications: {
     unknown: "Unknown notification",

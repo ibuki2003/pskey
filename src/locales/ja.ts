@@ -48,6 +48,8 @@ const ja = {
 
   aboutPSkey:
     "PSkeyはオープンソースソフトウェアです。サポート、ライセンス情報などはGitHubにて対応しています。",
+  contactToDeveloper:
+    "不具合の報告、要望のほか、CSAEに関するご連絡などは開発者へメッセージをお送りください。",
 
   notifications: {
     unknown: "不明な通知",

@@ -240,6 +240,24 @@ const ConfigModal: React.FC<Props> = (props) => {
           https://github.com/ibuki2003/pskey/wiki
         </Text>
       </Pressable>
+
+      <Text style={[style_fg, styles.noteText]}>{t("contactToDeveloper")}</Text>
+      <Pressable
+        onPress={() => {
+          // Linking.openURL("https://misskey.io/@fuwa2003");
+          props
+            .requester?.(
+              'window.location.href = "https://misskey.io/@fuwa2003"'
+            )
+            .then(() => props.onClose(false))
+            .catch((_) => Linking.openURL("https://misskey.io/@fuwa2003"))
+            .catch((e) => Alert.alert(t("errorOccured"), e.message));
+        }}
+      >
+        <Text style={[style_fg, styles.noteText, styles.linkText]}>
+          @fuwa2003@misskey.io
+        </Text>
+      </Pressable>
     </View>
   );
 
