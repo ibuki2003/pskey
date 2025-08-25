@@ -47,6 +47,7 @@ const en: Locale = {
   loginRequired: "Login required.",
   errorOccured: "An error occured.",
   registrationSuccessful: "Registration successful",
+  unregistrationSuccessful: "Unregistration successful",
 
   aboutPSkey:
     "PSkey is open source software. Support, license information, etc. are available on GitHub.",

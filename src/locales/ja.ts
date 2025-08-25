@@ -44,6 +44,7 @@ const ja = {
   loginRequired: "ログインが必要です。",
   errorOccured: "処理中にエラーが発生しました",
   registrationSuccessful: "設定が完了しました",
+  unregistrationSuccessful: "設定を解除しました",
 
   aboutPSkey:
     "PSkeyはオープンソースソフトウェアです。サポート、ライセンス情報などはGitHubにて対応しています。",

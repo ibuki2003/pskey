@@ -60,7 +60,7 @@ await Promise.all([
   headers: { 'Content-Type': 'application/json', },
   body: JSON.stringify({ i: account['token'], endpoint: e, }),
 })));
-alert('${i18n.t("registrationSuccessful")}');
+alert('${i18n.t("unregistrationSuccessful")}');
 `);
 
 export async function registerServiceWorker(domain: string) {
