@@ -43,6 +43,9 @@ const en: Locale = {
   refreshEmojis: "Refresh emojis",
   refreshEmojisAbout:
     "Force refresh emoji cache. The page will be reloaded after that.",
+  clearAllData: "Clear all data",
+  clearAllDataAbout:
+    "Clear all data stored for this server (localStorage), including server information, user accounts. This operation cannot be undone.",
 
   loginRequired: "Login required.",
   errorOccured: "An error occured.",

@@ -40,6 +40,9 @@ const ja = {
   refreshEmojis: "絵文字を更新する",
   refreshEmojisAbout:
     "絵文字キャッシュを強制的に更新します。その後ページがリロードされます。",
+  clearAllData: "すべてのデータを消去する",
+  clearAllDataAbout:
+    "ログイン情報、ユーザー設定など、このサーバーに対して保存されているすべてのデータ(localStorage)を消去します。",
 
   loginRequired: "ログインが必要です。",
   errorOccured: "処理中にエラーが発生しました",

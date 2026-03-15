@@ -50,6 +50,14 @@ const EMOJI_REFRESH_SCRIPT = minifyScript(`
 })();
 `);
 
+const CLEAN_ALL_SCRIPT = minifyScript(`
+(() => {
+  // NOTE: indexedDB is not cleared because it's only used for emoji cache for now.
+  localStorage.clear();
+  location.reload();
+})();
+`);
+
 const ConfigModal: React.FC<Props> = (props) => {
   const { t } = useTranslation();
   const theme = useTheme();
@@ -219,6 +227,19 @@ const ConfigModal: React.FC<Props> = (props) => {
         }
       >
         <Text style={styles.textStyle}>{t("refreshEmojis")}</Text>
+      </Pressable>
+
+      <Text style={[style_fg, styles.headingText]}>{t("clearAllData")}</Text>
+      <Text style={[style_fg, styles.noteText]}>{t("clearAllDataAbout")}</Text>
+      <Pressable
+        style={[styles.button, styles.buttonSave]}
+        onPress={() =>
+          props
+            .requester?.(CLEAN_ALL_SCRIPT)
+            .catch((e) => Alert.alert(t("errorOccured"), JSON.stringify(e)))
+        }
+      >
+        <Text style={styles.textStyle}>{t("clearAllData")}</Text>
       </Pressable>
     </View>
   );
