@@ -1,0 +1,41 @@
+diff --git a/node_modules/react-native-webview/android/src/main/java/com/reactnativecommunity/webview/RNCWebViewWrapper.kt b/node_modules/react-native-webview/android/src/main/java/com/reactnativecommunity/webview/RNCWebViewWrapper.kt
+index 9f9d6f3..8f51e6d 100644
+--- a/node_modules/react-native-webview/android/src/main/java/com/reactnativecommunity/webview/RNCWebViewWrapper.kt
++++ b/node_modules/react-native-webview/android/src/main/java/com/reactnativecommunity/webview/RNCWebViewWrapper.kt
+@@ -5,6 +5,9 @@ import android.graphics.Color
+ import android.view.View
+ import android.webkit.WebView
+ import android.widget.FrameLayout
++import androidx.core.graphics.Insets
++import androidx.core.view.ViewCompat
++import androidx.core.view.WindowInsetsCompat
+ 
+ /**
+  * A [FrameLayout] container to hold the [RNCWebView].
+@@ -14,12 +17,26 @@ import android.widget.FrameLayout
+  */
+ class RNCWebViewWrapper(context: Context, webView: RNCWebView) : FrameLayout(context) {
+   init {
++    val insetTypes = WindowInsetsCompat.Type.systemBars() or
++      WindowInsetsCompat.Type.displayCutout()
++
++    ViewCompat.setOnApplyWindowInsetsListener(this) { _, windowInsets ->
++      WindowInsetsCompat.Builder(windowInsets)
++        .setInsets(insetTypes, Insets.NONE)
++        .build()
++    }
++
+     // We make the WebView as transparent on top of the container,
+     // and let React Native sets background color for the container.
+     webView.setBackgroundColor(Color.TRANSPARENT)
+     addView(webView)
+   }
+ 
++  override fun onAttachedToWindow() {
++    super.onAttachedToWindow()
++    ViewCompat.requestApplyInsets(this)
++  }
++
+   val webView: RNCWebView = getChildAt(0) as RNCWebView
+ 
+   companion object {
